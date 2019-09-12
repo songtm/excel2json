@@ -750,8 +750,9 @@ function compileObjectObjectTable( sheet, row, keyIndex )
 	var value = {};
 	log( "Parsing Object Object Table..." );
 	if( keyCol == undefined ) {
-		popup( "$key COLUMN NOT FOUND" );
-		return null;
+		log( "$key COLUMN NOT FOUND and change to [{}]" );
+		return compileArrayObjectTable(sheet, row, keyIndex);
+		// return null;
 	}
 	log( "Using key index: " + keyCol );
 	while( sheet[row] != undefined && sheet[row][keyCol] != undefined && sheet[row][keyCol] ) {
