@@ -953,6 +953,15 @@ function parseExcel( excelFile )
 	return simpled;
 }
 
+function to_lua( jsonObj )
+{
+	return "hello lua";
+}
+function to_erlang(jsonObj)
+{
+	return "hello erlang";
+}
+
 try {
 	g_sourceFolder = assertTraillingOneSlash( g_sourceFolder );
 
@@ -989,10 +998,12 @@ try {
 			str = JSON.stringify(jsonObj).split("\n").join("\r\n");
 			ext = ".json";
 		} else if (g_exportType == "lua"){
+			str = to_lua(jsonObj);
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
 		{
+			str = to_erlang(jsonObj);
 			ext = ".config";
 		}
 		
