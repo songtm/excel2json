@@ -519,9 +519,9 @@ function popup( str, withoutColumnInfo, withoutScanningInfo )
 	g_popupMsg += _msg;
 }
 
-function saveJson( excelFile, jsonString )
+function saveToFile( excelFile, jsonString, fileExt)
 {
-	var jsonFileName = String(excelFile).replace(g_sourceFolder, "").replace(".xlsx", "").replace(".xls", "") + ".json";
+	var jsonFileName = String(excelFile).replace(g_sourceFolder, "").replace(".xlsx", "").replace(".xls", "") + fileExt;
 	var jsonPath = g_targetFolder + jsonFileName;
 
 	if( !F.FolderExists( g_targetFolder ) ) {
@@ -941,8 +941,8 @@ function parseExcel( excelFile )
 	deleteTemp( tmpdir );
 	log( "Closing: " + excelFile );
 	var rootObject = compileSheetArray( sheetArray );
-	var simpled = rootObject["_"] == undefined ? rootObject : rootObject["_"];
-	return JSON.stringify(simpled).split("\n").join("\r\n");
+	var simpled = rootObject["_"] == undefined ? rootObject : rootObject["_"]; //begin with _; then simple json structure
+	return simpled;
 }
 
 try {
@@ -971,8 +971,10 @@ try {
 	g_targetFolder = assertTraillingOneSlash( g_targetFolder );
 	for( var i in excels )
 	{
-		var jsonString = parseExcel(excels[i]);
-		saveJson( excels[i], jsonString );
+		var jsonObj = parseExcel(excels[i]);
+		var str = JSON.stringify(jsonObj).split("\n").join("\r\n");
+		var ext = ".json";
+		saveToFile( excels[i], str, ext);
 	}
 	deleteTempFiles( g_sourceFolder );
 
