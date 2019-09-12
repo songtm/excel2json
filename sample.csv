@@ -1,0 +1,48 @@
+,Initial Data,,,,
+,,Data,Description,,
+#init{},$key,$value,,,
+,coins,1000,Initial coins,,
+,exp,0,Initial exp.,,
+,golds,0,Initial gold,,
+,character,wizard,Initial character,,
+,,,,,
+,,,,,
+,Building Design,,,,
+,,Color,Width,height,
+#buildings{{}},$key,color,width,height,
+,barrack,blue,200,200,Barrack for battle
+,mine,yellow,200,100,Gold mine
+,gas,red,100,100,Gas mine
+,townhall,black,200,200,Main hall
+,,,,,
+,Required coins,,,,
+,barrack,Mine,Gas mine,,Level
+#reqcoins{[]},barrack,mine,gas,,
+,100,100,100,,0
+,500,500,500,,1
+,1000,1000,1000,,2
+,1500,,,,3
+,2000,,,,4
+,2500,,,,5
+,,,,,
+,Store,,,,
+,Name,Price,Required Level,Category,
+#shop[{}],name,price,req_level,category,desc
+,blade,100,1,attack,Sword
+,dagger,200,2,attack,Dagger
+,thorn_dagger,300,2,attack,Thorn dagger
+,mail,100,2,wear,Mail
+,,,,,
+,Initial Inventory,,,,
+,Name,Price,Required Level,Category,
+#inventory[{}],type,attrib[],,,dur
+,blade,"oil,diamond",,,100
+,thorn_dagger,saphire,,,150
+,mail,"diamond,saphire,rune",,,100
+,,,,,
+,,,,,
+#friends{},$key,$value[],,,
+,michael,"tobby,cory,cain",,,
+,tobby,"michael,cory",,,
+,tony,"sarah,john",,,
+,gump,,,,
