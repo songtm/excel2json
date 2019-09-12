@@ -633,17 +633,19 @@ function saveAsCSV( sheet, tmpdir )
 function getPrettyValue( value )
 {
 	if( value == null ) return "";
+	if( value == "" ) return "";
 	if( typeof(value) == "number" ) return value;
 	if( typeof(value) == "string" && isFinite(value) ) return Number(value);
 	return String(value);
 }
 
-function readCSVLine( csvLine )
+function readCSVLine( csvLine )//return array：$value[] ...
 {
 	var values = [];
 	var value = null;
 	var inQuote = false;
 	csvLine = String(csvLine);
+	// log("-----"+csvLine)
 	for(var i=0; i<csvLine.length; i++) {
 		var ch = csvLine.charAt(i);
 		var chNext = '';
@@ -653,6 +655,7 @@ function readCSVLine( csvLine )
 		if( !inQuote ) {
 			switch( ch ) {
 				case ',':
+					// log("  "+value + getPrettyValue(value))
 					values.push( getPrettyValue(value) );
 					value = "";
 					break;
@@ -815,6 +818,7 @@ function compileObjectArrayTable( sheet, row, keyIndex )
 		var r = row;
 		var v;
 		while( sheet[r] instanceof Array && (v=String(sheet[r][valCol])) != "") {
+			// log("xxx "+sheet[r][valCol])
 			if( isArray ) {
 				subkey = subkey.substr( 0, subkey.length - 2 );
 				obj.push( readCSVLine( v ) );
@@ -833,7 +837,7 @@ function compileSheet( sheet, rootObject )
 {
 	var csvFile = sheet[0];
 	setScanningFile( csvFile );
-	for( var row=1; row<sheet.length; row++ )
+	for( var row=1; row<sheet.length; row++ ) //each row of a sheet 
 	{
 		//try {
 			var line = sheet[row];
@@ -841,7 +845,7 @@ function compileSheet( sheet, rootObject )
 				continue;
 			}
 			
-			var anchor = line[0];
+			var anchor = line[0]; //sheet row:  [item1, item2, item3...]
 			if( anchor == null ) {
 				continue;
 			}
@@ -867,7 +871,7 @@ function compileSheet( sheet, rootObject )
 				scanning.col = col;
 				var key = line[col];
 				if( key.length > 0 ) {
-					parseLog( " Key: " + key + " at " + col );
+					parseLog( " Key: " + key + " at col" + col );
 					keyIndex[ key ] = col;
 				}
 			}
