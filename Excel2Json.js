@@ -104,6 +104,7 @@ var g_localConfig = g_scriptFolder + "Excel2Json.config.js";
 // DO NOT CHANGE THIS VALUE, MAKE Excel2Json.config.js FILE AND COPY THESE LINES AND EDIT THEM!!
 var g_sourceFolder = g_scriptFolder;
 var g_targetFolder = "output"; // subdirectory in g_sourceFolder
+var g_exportType = "lua";// 导出类型 lua,json, erlang
 var g_tempSuffix = ".$$$";
 var g_prettyOutput = true; // false for compact
 
@@ -964,8 +965,11 @@ try {
 				excels.push( g_sourceFolder + objArgs(i) );
 			}
 		}
+		if( !isExcel( objArgs( objArgs.length - 2) ) ) {
+			g_targetFolder = objArgs( objArgs.length - 2);
+		}
 		if( !isExcel( objArgs( objArgs.length - 1) ) ) {
-			g_targetFolder = objArgs( objArgs.length - 1);
+			g_exportType = objArgs( objArgs.length - 1);
 		}
 	} else {
 		excels = getExcelFiles(g_sourceFolder);
@@ -979,8 +983,19 @@ try {
 	for( var i in excels )
 	{
 		var jsonObj = parseExcel(excels[i]);
-		var str = JSON.stringify(jsonObj).split("\n").join("\r\n");
+		var str = "";
 		var ext = ".json";
+		if (g_exportType == "json") {
+			str = JSON.stringify(jsonObj).split("\n").join("\r\n");
+			ext = ".json";
+		} else if (g_exportType == "lua"){
+			ext = ".lua";
+		}
+		else if (g_exportType == "erlang")
+		{
+			ext = ".config";
+		}
+		
 		saveToFile( excels[i], str, ext);
 	}
 	deleteTempFiles( g_sourceFolder );
