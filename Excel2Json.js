@@ -1,3 +1,10 @@
+// songtianming:2019/9/12 17:36:18扩展支持：
+// #_{{}}会精简层级
+// #xx{{}}没有$key时会自动转为#xx[{}]
+// todo：cs标记
+// todo: lua导出
+
+
 /*****
 
 Excel2JSON, Excel - JSON Builder v1.0
