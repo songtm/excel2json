@@ -16,65 +16,65 @@ You may use/distribute freely under the A-CUP-OF-BEER license.
 Copyright (c) 2013, Hojin Choi <hojin.choi@gmail.com>
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or 
-without modification, are permitted provided that 
+Redistribution and use in source and binary forms, with or
+without modification, are permitted provided that
 the following conditions are met:
 
 Conditions:
-1. Redistributions of source code must retain the above 
+1. Redistributions of source code must retain the above
 copyright notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright notice, 
-this list of conditions and the following disclaimer in the documentation 
+2. Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
 and/or other materials provided with the distribution.
-3. Offering A CUP OF BEER with braveness for expressing "thank you" 
-for using/redistributing of source code or binary form to copyright holder 
+3. Offering A CUP OF BEER with braveness for expressing "thank you"
+for using/redistributing of source code or binary form to copyright holder
 must be remembered. In spite of this condition, the copyright holder can
 say 'no thank you' for expressing to decline the beer.
 
 DISCLAIMER:
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS 
-AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED 
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT 
-SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
-BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS
+AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 
 
-다음의 조건들을 충족시키는 한, 소스형식과 바이너리형식을 통한 
+다음의 조건들을 충족시키는 한, 소스형식과 바이너리형식을 통한
 재배포와 사용은 수정여부에 관계없이 허용된다.
 
 조건들
-1. 소스코드의 재배포는 위의 저작권표시와 여기 나열된 조건들, 
+1. 소스코드의 재배포는 위의 저작권표시와 여기 나열된 조건들,
 그리고 아래의 보증부인 고지를 포함해야 한다.
-2. 바이너리형식으로 재배포할때는 위의 저작권표시와 여기 나열된 
-조건들 그리고 아래의 보증부인고지를 배포할 때 제공되는 문서 
+2. 바이너리형식으로 재배포할때는 위의 저작권표시와 여기 나열된
+조건들 그리고 아래의 보증부인고지를 배포할 때 제공되는 문서
 및 기타자료에 포함해야 한다.
-3. 재배포 혹은 사용에 대한 "고맙습니다"의 표시로써, 저작권자에게 
+3. 재배포 혹은 사용에 대한 "고맙습니다"의 표시로써, 저작권자에게
 용기내어 맥주 한 잔을 대접해야겠다는 것은 언제든지 기억해야한다.
-그러나 이 조건에도 불구하고 저작권자는 거절의 표시로 "됐습니다"라고 
+그러나 이 조건에도 불구하고 저작권자는 거절의 표시로 "됐습니다"라고
 말할 수 있다.
 
 보증부인 고지사항
-저작권자와 기여자는 이 소프트웨어를 “있는 그대로의” 상태로 
-제공하며, 상품성 여부나 특정한 목적에 대한 적합성에 대한 묵시적 
-보증을 포함한 어떠한 형태의 보증도 명시적이나 묵시적으로 
-제공되지 않는다.  손해 가능성을 사전에 알고 있었다 하더라도, 
-저작권자나 기여자는 어떠한 경우에도 이 소프트웨어의 사용으로 
-인하여 발생한, 직접적이거나 간접적인 손해, 우발적이거나 결과적 
-손해, 특수하거나 일반적인 손해에 대하여, 그 발생의 원인이나 
-책임론, 계약이나 무과실책임이나 불법행위(과실 등을 포함)와 
-관계 없이 책임을 지지 않는다. 이러한 조건은 대체 재화나 용역의 
-구입 및 유용성이나 데이터, 이익의 손실, 그리고 영업 방해 등을 
+저작권자와 기여자는 이 소프트웨어를 “있는 그대로의” 상태로
+제공하며, 상품성 여부나 특정한 목적에 대한 적합성에 대한 묵시적
+보증을 포함한 어떠한 형태의 보증도 명시적이나 묵시적으로
+제공되지 않는다.  손해 가능성을 사전에 알고 있었다 하더라도,
+저작권자나 기여자는 어떠한 경우에도 이 소프트웨어의 사용으로
+인하여 발생한, 직접적이거나 간접적인 손해, 우발적이거나 결과적
+손해, 특수하거나 일반적인 손해에 대하여, 그 발생의 원인이나
+책임론, 계약이나 무과실책임이나 불법행위(과실 등을 포함)와
+관계 없이 책임을 지지 않는다. 이러한 조건은 대체 재화나 용역의
+구입 및 유용성이나 데이터, 이익의 손실, 그리고 영업 방해 등을
 포함하나 이에 국한되지는 않는다.
 
 *****/
@@ -536,7 +536,7 @@ function saveToFile( excelFile, jsonString, fileExt)
 		F.CreateFolder( g_targetFolder );
 	}
 
-	//http://msdn.microsoft.com/en-us/library/windows/desktop/ms677486(v=vs.85).aspx 
+	//http://msdn.microsoft.com/en-us/library/windows/desktop/ms677486(v=vs.85).aspx
 	var A1 = WScript.CreateObject("ADODB.Stream");
 	A1.Charset = "utf-8"
 	A1.Mode = 3; // adModeReadWrite;
@@ -553,7 +553,7 @@ function saveToFile( excelFile, jsonString, fileExt)
 	A1.CopyTo( A2 );
 	A2.SaveToFile( jsonPath, 2 /* adSaveCreateOverWrite */ );
 	A2.Close();
-	
+
 	popup( "Output: " + jsonPath, false, true );
 }
 
@@ -590,12 +590,12 @@ function deleteTemp( tmpdir )
 	if( !tmpdir.endsWith( g_tempSuffix ) ) {
 		return;
 	}
-	
+
 	//Just skip non-existent folder.
 	if( !F.FolderExists( tmpdir ) ) {
 		return;
 	}
-	
+
 	//Let's do it!
 	F.DeleteFolder( tmpdir, true );
 }
@@ -631,7 +631,7 @@ function saveAsCSV( sheet, tmpdir )
 		F.CreateFolder( tmpdir );
 	}
 	var csvFile = tmpdir + "\\" + sheet.Name + ".csv";
-	
+
 	// http://msdn.microsoft.com/en-us/library/office/ff198017.aspx
 	// XlFileFormat Enumeration Table: CSV (6)
 	sheet.SaveAs( csvFile, 6);
@@ -723,7 +723,7 @@ function compileSimpleTable( sheet, row, keyIndex )
 		popup( "$key COLUMN NOT FOUND" );
 		return null;
 	}
-	
+
 	var valCol = keyIndex["$value"];
 	if( valCol == undefined ) {
 		valCol = keyIndex["$value[]"];
@@ -738,7 +738,7 @@ function compileSimpleTable( sheet, row, keyIndex )
 		popup( "$value or $value[] COLUMN NOT FOUND" );
 		return null;
 	}
-	
+
 	log( "Using key index: " + keyCol + " value index: " + valCol );
 	while( sheet[row] != undefined && sheet[row][keyCol] != undefined && sheet[row][keyCol] ) {
 		if( isArrayValue ) {
@@ -765,7 +765,7 @@ function compileObjectObjectTable( sheet, row, keyIndex )
 	log( "Using key index: " + keyCol );
 	while( sheet[row] != undefined && sheet[row][keyCol] != undefined && sheet[row][keyCol] ) {
 		var obj = {};
-		
+
 		for( subkey in keyIndex ) {
 			if( subkey == "$key" ) continue;
 			var valCol = keyIndex[subkey];
@@ -846,14 +846,14 @@ function compileSheet( sheet, rootObject )
 {
 	var csvFile = sheet[0];
 	setScanningFile( csvFile );
-	for( var row=1; row<sheet.length; row++ ) //each row of a sheet 
+	for( var row=1; row<sheet.length; row++ ) //each row of a sheet
 	{
 		//try {
 			var line = sheet[row];
 			if( line == undefined ) {
 				continue;
 			}
-			
+
 			var anchor = line[0]; //sheet row:  [item1, item2, item3...]
 			if( anchor == null ) {
 				continue;
@@ -865,7 +865,7 @@ function compileSheet( sheet, rootObject )
 			}
 
 			scanning.row = row;
-			
+
 			var objectName = "";
 			var objectType = "";
 			var keyIndex = {};
@@ -875,7 +875,7 @@ function compileSheet( sheet, rootObject )
 			objectName = objectName.substring(1);
 			log( "------------------------------------------------------------------------------" );
 			parseLog( "Found object mark: '" + anchor + "'");
-			
+
 			for( var col=1; col<line.length; col++ ) {
 				scanning.col = col;
 				var key = line[col];
@@ -919,14 +919,14 @@ function compileSheetArray( sheetArray )
 function parseExcel( excelFile )
 {
 	E.Workbooks.Open( excelFile, true, true );
-	
+
 	var tmpdir = excelFile + g_tempSuffix;
 	var csvFiles = [];
 	var sheetArray = [];
 	deleteTemp( tmpdir );
-	
+
 	log( "\r\nLoading: " + excelFile );
-	
+
 	try {
 		for( var i = 1; i <= E.Worksheets.Count; i++ ) {
 			var sheet = E.Worksheets.Item(i);
@@ -953,21 +953,46 @@ function parseExcel( excelFile )
 	return simpled;
 }
 
-function to_lua( jsonObj, lines)
-{
-	if (jsonObj instanceof Array) //array
-	{
 
-	}else //obj
-	{
-
-	}
-	for(var i in jsonObj)
-	{
-
-	}
-	// return "hello lua";
+function checkStr(value) {
+    if (typeof(value)  == "string")
+    {
+      return '"'+value + '"';
+    }
+    return  value
 }
+
+function to_lua(newLineLv, o, lines, level, indent,parentIsArray) {
+  var newLine = level <= newLineLv ? "\r\n" : "";
+  var newLineAndIndent = level <= newLineLv ? "\r\n" + indent + "\t" : "";
+  var newIndent = level <= newLineLv ? indent + "\t" : indent;
+
+  var line = (parentIsArray?indent:"")+"{";
+  if (o instanceof Array){//array
+    o.forEach(function(item){
+        if (typeof(item) == "object"){
+           line += newLine+to_lua(newLineLv, item, lines, level + 1, newIndent, true);
+        }
+        else{//basic element
+            line += newLineAndIndent+checkStr(item) + ",";
+        }
+    });
+  }else {//obj
+    for (var k in o) {
+      if (typeof(o[k])=="object") {
+          line += newLineAndIndent + k + " = " + to_lua(newLineLv, o[k],lines, level+1, newIndent);
+      }
+      else//basic element
+      {
+        line += newLineAndIndent + k + " = " + checkStr(o[k]) + ",";
+      }
+    }
+  }
+
+  line += (newLine == "" ? "" : newLine+indent)  +"},";
+  return lines + line;
+}
+
 function to_erlang(jsonObj)
 {
 	return "hello erlang";
@@ -997,7 +1022,7 @@ try {
 	if( excels.length == 0 ) {
 		W.Echo("There is no excel files in\r\n" + g_sourceFolder );
 	}
-	
+
 	g_targetFolder = g_sourceFolder + g_targetFolder;
 	g_targetFolder = assertTraillingOneSlash( g_targetFolder );
 	for( var i in excels )
@@ -1010,7 +1035,7 @@ try {
 			ext = ".json";
 		} else if (g_exportType == "lua"){
 			var lines = [];
-			str = to_lua(jsonObj, lines).join("\r\n");
+			str = to_lua(o instanceof Array ? 1 : 2,jsonObj,"", 1, "")
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
@@ -1018,7 +1043,7 @@ try {
 			str = to_erlang(jsonObj);
 			ext = ".config";
 		}
-		
+
 		saveToFile( excels[i], str, ext);
 	}
 	deleteTempFiles( g_sourceFolder );
