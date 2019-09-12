@@ -965,7 +965,7 @@ function checkStr(value) {
 function to_lua(newLineLv, o, lines, level, indent,parentIsArray) {
   var newLine = level <= newLineLv ? "\r\n" : "";
   var newLineAndIndent = level <= newLineLv ? "\r\n" + indent + "\t" : "";
-  var newIndent = level <= newLineLv ? indent + "\t" : indent;
+  var newIndent = level <= newLineLv ? indent + "\t" : "";
 
   var line = (parentIsArray?indent:"")+"{";
   if (o instanceof Array){//array
