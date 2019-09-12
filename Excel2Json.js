@@ -941,7 +941,8 @@ function parseExcel( excelFile )
 	deleteTemp( tmpdir );
 	log( "Closing: " + excelFile );
 	var rootObject = compileSheetArray( sheetArray );
-	return JSON.stringify( rootObject ).split("\n").join("\r\n");
+	var simpled = rootObject["_"] == undefined ? rootObject : rootObject["_"];
+	return JSON.stringify(simpled).split("\n").join("\r\n");
 }
 
 try {
