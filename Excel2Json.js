@@ -953,9 +953,20 @@ function parseExcel( excelFile )
 	return simpled;
 }
 
-function to_lua( jsonObj )
+function to_lua( jsonObj, lines)
 {
-	return "hello lua";
+	if (jsonObj instanceof Array) //array
+	{
+
+	}else //obj
+	{
+
+	}
+	for(var i in jsonObj)
+	{
+
+	}
+	// return "hello lua";
 }
 function to_erlang(jsonObj)
 {
@@ -998,7 +1009,8 @@ try {
 			str = JSON.stringify(jsonObj).split("\n").join("\r\n");
 			ext = ".json";
 		} else if (g_exportType == "lua"){
-			str = to_lua(jsonObj);
+			var lines = [];
+			str = to_lua(jsonObj, lines).join("\r\n");
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
