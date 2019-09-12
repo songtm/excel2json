@@ -918,8 +918,8 @@ function parseExcel( excelFile )
 		for( var i = 1; i <= E.Worksheets.Count; i++ ) {
 			var sheet = E.Worksheets.Item(i);
 			log( "Parse sheet: " + sheet.Name );
-			if( sheet.Name.substr(0,1) == '!' ) {
-				log( "Skipped, '!' prefix detected" );
+			if( sheet.Name.substr(0,1) != '#' ) {
+				log( "Skipped, no '#' prefix detected" );
 				continue;
 			}
 			var csvFile = saveAsCSV( sheet, tmpdir );
