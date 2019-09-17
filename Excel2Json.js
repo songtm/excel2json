@@ -2,7 +2,7 @@
 //WSCRIPT.EXE Excel2Json.js file1.xlsx file2.xlsx product lua  //lua erlang json
 // #_{{}}会精简层级
 // #xx{{}}没有$key时会自动转为#xx[{}]
-// todo：cs标记
+// cs标记: chapter_id#c, chapter_id#s
 // todo: lua导出
 
 
@@ -883,13 +883,22 @@ function compileSheet( sheet, rootObject )
 				var key = line[col];
 				if( key.length > 0 ) {
 					var tagIndex = key.indexOf("#");
+					var tag = "";
 					if (tagIndex>=0) {
-						var tag = key.substring(tagIndex);
+						tag = key.substring(tagIndex);
 						key = key.substring(0, tagIndex);
 						keyTag[key] = tag;
 					}
-					parseLog( " Key: " + key + " at col" + col );
-					keyIndex[ key ] = col;
+					var ignore = false;
+					if (tag.indexOf("c") >= 0 && g_exportType == "erlang") { //client only
+						ignore = true;
+					}
+					else if (tag.indexOf("s") >= 0 && g_exportType == "lua") { //server only
+						ignore = true;
+					}
+					if (!ignore)
+						keyIndex[ key ] = col;
+					parseLog( " Key: " + key + " at col" + col + " tag:" + tag + " ingore:"+ignore) ;
 				}
 			}
 			var compiler = null;
