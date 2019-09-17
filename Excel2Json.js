@@ -870,6 +870,7 @@ function compileSheet( sheet, rootObject )
 			var objectName = "";
 			var objectType = "";
 			var keyIndex = {};
+			var keyTag= {};
 
 			objectName = String(/#\w+/.exec( anchor ));
 			objectType = anchor.substring( objectName.length );
@@ -881,6 +882,12 @@ function compileSheet( sheet, rootObject )
 				scanning.col = col;
 				var key = line[col];
 				if( key.length > 0 ) {
+					var tagIndex = key.indexOf("#");
+					if (tagIndex>=0) {
+						var tag = key.substring(tagIndex);
+						key = key.substring(0, tagIndex);
+						keyTag[key] = tag;
+					}
 					parseLog( " Key: " + key + " at col" + col );
 					keyIndex[ key ] = col;
 				}
