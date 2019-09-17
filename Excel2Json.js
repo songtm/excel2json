@@ -955,7 +955,17 @@ function parseExcel( excelFile )
 }
 
 
-function checkStr(value) {
+function checkKey(k)
+{
+	k = getPrettyValue(k);
+	if (typeof(k)  == "number")	
+	{
+		return "["+k+"]";
+	}
+	return k;
+}
+
+function checkValueStr(value) {
     if (typeof(value)  == "string")
     {
 		if (value.indexOf('"')>=0)
@@ -981,17 +991,17 @@ function to_lua(indentMaxLv, o, lines, stackLevel, indentStr,parentIsArray) {
            line += newLine+to_lua(indentMaxLv, item, lines, stackLevel + 1, newIndent, true);
         }
         else{//basic element
-            line += newLineAndIndent+checkStr(item) + ",";
+            line += newLineAndIndent+checkValueStr(item) + ",";
         }
     };
   }else {//obj
     for (var k in o) {
       if (typeof(o[k])=="object") {
-          line += newLineAndIndent + k + " = " + to_lua(indentMaxLv, o[k],lines, stackLevel+1, newIndent);
+          line += newLineAndIndent + checkKey(k) + " = " + to_lua(indentMaxLv, o[k],lines, stackLevel+1, newIndent);
       }
       else//basic element
       {
-        line += newLineAndIndent + k + " = " + checkStr(o[k]) + ",";
+        line += newLineAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ",";
       }
     }
   }
@@ -1043,7 +1053,8 @@ try {
 		} else if (g_exportType == "lua"){
 			// log(JSON.stringify(jsonObj).split("\n").join("\r\n"));
 			var lines = [];
-			str = to_lua(jsonObj instanceof Array ? 1 : 2,jsonObj,"", 1, "", false);
+			var indexLvOffset = 1;
+			str = to_lua((jsonObj instanceof Array ? 1 : 2)+indexLvOffset,jsonObj,"", 1, "", false);
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
