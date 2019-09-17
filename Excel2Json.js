@@ -958,7 +958,10 @@ function parseExcel( excelFile )
 function checkStr(value) {
     if (typeof(value)  == "string")
     {
-		value = value.replace('"', "\\\"");
+		if (value.indexOf('"')>=0)
+		{
+			value = value.replace(new RegExp("\"", "gm"), "\\\"");//gm global mutiline
+		}
       	return '"'+value + '"';
     }
     return  value

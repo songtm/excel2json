@@ -6,7 +6,7 @@ local config={
 		character = "wizard",
 	},
 	buildings = {
-		barrack = {color = "bl\"ue",width = 200,height = 200,},
+		barrack = {color = "b\"l\"ue\"",width = 200,height = 200,},
 		mine = {color = "yellow",width = 200,height = 100,},
 		gas = {color = "red",width = 100,height = 100,},
 		townhall = {color = "black",width = 200,height = 200,},
