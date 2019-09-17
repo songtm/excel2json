@@ -638,28 +638,6 @@ function saveAsCSV( sheet, tmpdir )
 	return csvFile;
 }
 
-function getPrettyValue( value, tag, row, col)
-{
-	
-		if( value == null ) return "";
-		if( value == "" ) return "";
-		if( typeof(value) == "number" ) return value;
-		if( typeof(value) == "string" && isFinite(value) ) return Number(value);
-		if (tag == undefined || tag.indexOf("j") == -1){
-			return String(value);
-		}else {//json str
-			try {
-				var o = JSON.parse(value);
-				return o;
-			} catch(e) {
-				var msg = "Parse json string Error:\r\n"+
-					"file:"+ scanning.file+" row:"+row+1 + " col:"+col +"\r\n"+value;
-				e.message = msg; 
-				throw e;
-			}
-		}
-}
-
 function readCSVLine( csvLine )//return array：$value[] ...
 {
 	var values = [];
@@ -982,6 +960,26 @@ function parseExcel( excelFile )
 	return simpled;
 }
 
+function getPrettyValue( value, tag, row, col)
+{
+	if( value == null ) return "";
+	if( value == "" ) return "";
+	if( typeof(value) == "number" ) return value;
+	if( typeof(value) == "string" && isFinite(value) ) return Number(value);
+	if (tag == undefined || tag.indexOf("j") == -1){
+		return String(value);
+	}else {//json str
+		try {
+			var o = JSON.parse(value);
+			return o;
+		} catch(e) {
+			var msg = "Parse json string Error:\r\n"+
+				"file:"+ scanning.file+" row:"+row+1 + " col:"+col +"\r\n"+value;
+			e.message = msg; 
+			throw e;
+		}
+	}
+}
 
 function checkKey(k)
 {
