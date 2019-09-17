@@ -996,6 +996,8 @@ function checkKey(k)
 function checkValueStr(value) {
     if (typeof(value)  == "string")
     {
+		if (value == "TRUE" || value == "true") return "true";
+		if (value == "FALSE" || value == "false") return "false";
 		if (value.indexOf('"')>=0)
 		{
 			value = value.replace(new RegExp("\"", "gm"), "\\\"");//gm global mutiline
