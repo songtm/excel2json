@@ -2,8 +2,7 @@
 //WSCRIPT.EXE Excel2Json.js file1.xlsx file2.xlsx product lua  //lua erlang json
 // #_{{}}会精简层级
 // #xx{{}}没有$key时会自动转为#xx[{}]
-// cs标记: chapter_id#c, chapter_id#s
-// todo: lua导出
+// cs标记: chapter_id#c, chapter_id#s, chapter_id#j表示json表达式
 
 
 /*****
@@ -639,13 +638,18 @@ function saveAsCSV( sheet, tmpdir )
 	return csvFile;
 }
 
-function getPrettyValue( value )
+function getPrettyValue( value, tag)
 {
-	if( value == null ) return "";
-	if( value == "" ) return "";
-	if( typeof(value) == "number" ) return value;
-	if( typeof(value) == "string" && isFinite(value) ) return Number(value);
-	return String(value);
+	
+		if( value == null ) return "";
+		if( value == "" ) return "";
+		if( typeof(value) == "number" ) return value;
+		if( typeof(value) == "string" && isFinite(value) ) return Number(value);
+		if (tag == undefined || tag.indexOf("j") == -1){
+			return String(value);
+		}else {//json str
+			return JSON.parse(value);
+		}
 }
 
 function readCSVLine( csvLine )//return array：$value[] ...
@@ -714,7 +718,7 @@ function readCSVFile( csvFile )
 	return sheet;
 }
 
-function compileSimpleTable( sheet, row, keyIndex )
+function compileSimpleTable( sheet, row, keyIndex, keyTag)
 {
 	var keyCol = keyIndex["$key"];
 	var isArrayValue = false;
@@ -745,14 +749,14 @@ function compileSimpleTable( sheet, row, keyIndex )
 		if( isArrayValue ) {
 			value[ sheet[row][keyCol] ] = readCSVLine( sheet[row][valCol] );
 		} else {
-			value[ sheet[row][keyCol] ] = getPrettyValue(sheet[row][valCol]);
+			value[ sheet[row][keyCol] ] = getPrettyValue(sheet[row][valCol], keyTag["$value"]);
 		}
 		row++;
 	}
 	return value;
 }
 
-function compileObjectObjectTable( sheet, row, keyIndex )
+function compileObjectObjectTable( sheet, row, keyIndex, keyTag)
 {
 	var keyCol = keyIndex["$key"];
 	var isArrayValue = false;
@@ -760,7 +764,7 @@ function compileObjectObjectTable( sheet, row, keyIndex )
 	log( "Parsing Object Object Table..." );
 	if( keyCol == undefined ) {
 		log( "$key COLUMN NOT FOUND and change to [{}]" );
-		return compileArrayObjectTable(sheet, row, keyIndex);
+		return compileArrayObjectTable(sheet, row, keyIndex, keyTag);
 		// return null;
 	}
 	log( "Using key index: " + keyCol );
@@ -774,7 +778,7 @@ function compileObjectObjectTable( sheet, row, keyIndex )
 				subkey = subkey.substr( 0, subkey.length - 2 );
 				obj[ subkey ] = readCSVLine( sheet[row][valCol] );
 			} else {
-				obj[ subkey ] = getPrettyValue( sheet[row][valCol] );
+				obj[ subkey ] = getPrettyValue( sheet[row][valCol], keyTag[subkey]);
 			}
 		}
 		value[ sheet[row][keyCol] ] = obj;
@@ -783,7 +787,7 @@ function compileObjectObjectTable( sheet, row, keyIndex )
 	return value;
 }
 
-function compileArrayObjectTable( sheet, row, keyIndex )
+function compileArrayObjectTable( sheet, row, keyIndex, keyTag)
 {
 	var value = [];
 	log( "Parsing Array Object Table..." );
@@ -799,7 +803,7 @@ function compileArrayObjectTable( sheet, row, keyIndex )
 					isSane = true;
 				}
 			} else {
-				obj[ subkey ] = getPrettyValue(sheet[row][valCol]);
+				obj[ subkey ] = getPrettyValue(sheet[row][valCol], keyTag[subkey]);
 				if( obj[subkey] ) {
 					isSane = true;
 				}
@@ -814,7 +818,7 @@ function compileArrayObjectTable( sheet, row, keyIndex )
 	return value;
 }
 
-function compileObjectArrayTable( sheet, row, keyIndex )
+function compileObjectArrayTable( sheet, row, keyIndex, keyTag )
 {
 	var value = {};
 	log( "Parsing Object Array Table..." );
@@ -833,7 +837,7 @@ function compileObjectArrayTable( sheet, row, keyIndex )
 				subkey = subkey.substr( 0, subkey.length - 2 );
 				obj.push( readCSVLine( v ) );
 			} else {
-				obj.push( getPrettyValue(v) );
+				obj.push( getPrettyValue(v, keyTag[subkey]) );
 			}
 			r++;
 		}
@@ -911,7 +915,7 @@ function compileSheet( sheet, rootObject )
 					popup( "Invalid object type marker: " + anchor );
 			}
 			if( compiler ) {
-				var value = compiler.call( null, sheet, row + 1, keyIndex );
+				var value = compiler.call( null, sheet, row + 1, keyIndex, keyTag);
 				if( value ) {
 					rootObject[objectName] = value;
 				}

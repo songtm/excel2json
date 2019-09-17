@@ -23,10 +23,10 @@ local config={
 		{name = "mail",price = 100,req_level = 2,category = "wear",desc = "Mail",},
 	},
 	inventory = {
-		{type = "blade",attrib = {"oil","diamond",},},
-		{type = "thorn_dagger",attrib = {"saphire",},},
-		{type = "mail",attrib = {"diamond","saphire","rune",},},
-		{type = "旬是什么",attrib = {"s dsfjs 是要",},},
+		{type = "blade",attrib = "",},
+		{type = "thorn_dagger",attrib = {a = 1,},},
+		{type = "mail",attrib = "",},
+		{type = "旬是什么",attrib = "",},
 	},
 	friends = {
 		michael = {"tobby","cory","cain",},
