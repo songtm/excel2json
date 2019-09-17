@@ -1053,8 +1053,8 @@ try {
 		} else if (g_exportType == "lua"){
 			// log(JSON.stringify(jsonObj).split("\n").join("\r\n"));
 			var lines = [];
-			var indexLvOffset = 0;
-			str = to_lua((jsonObj instanceof Array ? 1 : 2)+indexLvOffset,jsonObj,"", 1, "", false);
+			var indentLv = jsonObj instanceof Array ? 1 : 2;
+			str = to_lua(indentLv,jsonObj,"", 1, "", false);
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
