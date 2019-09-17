@@ -638,7 +638,7 @@ function saveAsCSV( sheet, tmpdir )
 	return csvFile;
 }
 
-function getPrettyValue( value, tag)
+function getPrettyValue( value, tag, row, col)
 {
 	
 		if( value == null ) return "";
@@ -648,7 +648,15 @@ function getPrettyValue( value, tag)
 		if (tag == undefined || tag.indexOf("j") == -1){
 			return String(value);
 		}else {//json str
-			return JSON.parse(value);
+			try {
+				var o = JSON.parse(value);
+				return o;
+			} catch(e) {
+				var msg = "Parse json string Error:\r\n"+
+					"file:"+ scanning.file+" row:"+row+1 + " col:"+col +"\r\n"+value;
+				e.message = msg; 
+				throw e;
+			}
 		}
 }
 
@@ -749,7 +757,7 @@ function compileSimpleTable( sheet, row, keyIndex, keyTag)
 		if( isArrayValue ) {
 			value[ sheet[row][keyCol] ] = readCSVLine( sheet[row][valCol] );
 		} else {
-			value[ sheet[row][keyCol] ] = getPrettyValue(sheet[row][valCol], keyTag["$value"]);
+			value[ sheet[row][keyCol] ] = getPrettyValue(sheet[row][valCol], keyTag["$value"], row, valCol);
 		}
 		row++;
 	}
@@ -778,7 +786,7 @@ function compileObjectObjectTable( sheet, row, keyIndex, keyTag)
 				subkey = subkey.substr( 0, subkey.length - 2 );
 				obj[ subkey ] = readCSVLine( sheet[row][valCol] );
 			} else {
-				obj[ subkey ] = getPrettyValue( sheet[row][valCol], keyTag[subkey]);
+				obj[ subkey ] = getPrettyValue( sheet[row][valCol], keyTag[subkey], row, valCol);
 			}
 		}
 		value[ sheet[row][keyCol] ] = obj;
@@ -803,7 +811,7 @@ function compileArrayObjectTable( sheet, row, keyIndex, keyTag)
 					isSane = true;
 				}
 			} else {
-				obj[ subkey ] = getPrettyValue(sheet[row][valCol], keyTag[subkey]);
+				obj[ subkey ] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
 				if( obj[subkey] ) {
 					isSane = true;
 				}
@@ -837,7 +845,7 @@ function compileObjectArrayTable( sheet, row, keyIndex, keyTag )
 				subkey = subkey.substr( 0, subkey.length - 2 );
 				obj.push( readCSVLine( v ) );
 			} else {
-				obj.push( getPrettyValue(v, keyTag[subkey]) );
+				obj.push( getPrettyValue(v, keyTag[subkey], r, valCol) );
 			}
 			r++;
 		}

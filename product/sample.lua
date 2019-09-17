@@ -23,7 +23,7 @@ local config={
 		{name = "mail",price = 100,req_level = 2,category = "wear",desc = "Mail",},
 	},
 	inventory = {
-		{type = "blade",attrib = "",},
+		{type = "blade",attrib = undefined,},
 		{type = "thorn_dagger",attrib = {a = 1,},},
 		{type = "mail",attrib = "",},
 		{type = "旬是什么",attrib = "",},
