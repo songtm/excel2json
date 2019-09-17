@@ -1,4 +1,5 @@
 // songtianming:2019/9/12 17:36:18扩展支持：
+//WSCRIPT.EXE Excel2Json.js file1.xlsx file2.xlsx product lua  //lua erlang json
 // #_{{}}会精简层级
 // #xx{{}}没有$key时会自动转为#xx[{}]
 // todo：cs标记
@@ -93,7 +94,7 @@ var E = WScript.CreateObject("Excel.Application");
 
 // Turn off excel alert
 E.DisplayAlerts = false;
-E.Visible = true;
+E.Visible = false;
 
 var g_scriptFolder = W.ScriptFullName.replace( W.ScriptName, "" );
 var g_logFd = null;
@@ -957,30 +958,33 @@ function parseExcel( excelFile )
 function checkStr(value) {
     if (typeof(value)  == "string")
     {
-      return '"'+value + '"';
+		value = value.replace('"', "\\\"");
+      	return '"'+value + '"';
     }
     return  value
 }
 
-function to_lua(newLineLv, o, lines, level, indent,parentIsArray) {
-  var newLine = level <= newLineLv ? "\r\n" : "";
-  var newLineAndIndent = level <= newLineLv ? "\r\n" + indent + "\t" : "";
-  var newIndent = level <= newLineLv ? indent + "\t" : "";
+function to_lua(indentMaxLv, o, lines, stackLevel, indentStr,parentIsArray) {
+  var newLine = stackLevel <= indentMaxLv ? "\r\n" : "";
+  var newLineAndIndent = stackLevel <= indentMaxLv ? "\r\n" + indentStr + "\t" : "";
+  var newIndent = stackLevel <= indentMaxLv ? indentStr + "\t" : "";
 
-  var line = (parentIsArray?indent:"")+"{";
+  var line = (parentIsArray?indentStr:"")+"{";
   if (o instanceof Array){//array
-    o.forEach(function(item){
+	for (var i in o)
+	{
+		var item = o[i];
         if (typeof(item) == "object"){
-           line += newLine+to_lua(newLineLv, item, lines, level + 1, newIndent, true);
+           line += newLine+to_lua(indentMaxLv, item, lines, stackLevel + 1, newIndent, true);
         }
         else{//basic element
             line += newLineAndIndent+checkStr(item) + ",";
         }
-    });
+    };
   }else {//obj
     for (var k in o) {
       if (typeof(o[k])=="object") {
-          line += newLineAndIndent + k + " = " + to_lua(newLineLv, o[k],lines, level+1, newIndent);
+          line += newLineAndIndent + k + " = " + to_lua(indentMaxLv, o[k],lines, stackLevel+1, newIndent);
       }
       else//basic element
       {
@@ -989,8 +993,8 @@ function to_lua(newLineLv, o, lines, level, indent,parentIsArray) {
     }
   }
 
-  line += (newLine == "" ? "" : newLine+indent)  +"},";
-  return lines + line;
+  line += (newLine == "" ? "" : newLine+indentStr)  +"}" + (stackLevel == 1? "" : ",");
+  return (stackLevel == 1?"local config=":"")+lines + line + (stackLevel==1?"\r\nreturn config":"");
 }
 
 function to_erlang(jsonObj)
@@ -1034,8 +1038,9 @@ try {
 			str = JSON.stringify(jsonObj).split("\n").join("\r\n");
 			ext = ".json";
 		} else if (g_exportType == "lua"){
+			// log(JSON.stringify(jsonObj).split("\n").join("\r\n"));
 			var lines = [];
-			str = to_lua(o instanceof Array ? 1 : 2,jsonObj,"", 1, "")
+			str = to_lua(jsonObj instanceof Array ? 1 : 2,jsonObj,"", 1, "", false);
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang")
