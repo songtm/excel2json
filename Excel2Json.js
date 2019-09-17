@@ -1007,37 +1007,37 @@ function checkValueStr(value) {
     return  value
 }
 
-function to_lua(indentMaxLv, o, lines, stackLevel, indentStr,parentIsArray) {
-  var newLine = stackLevel <= indentMaxLv ? "\r\n" : "";
-  var newLineAndIndent = stackLevel <= indentMaxLv ? "\r\n" + indentStr + "\t" : "";
-  var newIndent = stackLevel <= indentMaxLv ? indentStr + "\t" : "";
+function to_lua(indMaxLv, o, lines, stackLv, indStr,prtIsArr) {
+  var nl = stackLv <= indMaxLv ? "\r\n" : "";
+  var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
+  var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
 
-  var line = (parentIsArray?indentStr:"")+"{";
+  var line = (prtIsArr?indStr:"")+"{";
   if (o instanceof Array){//array
 	for (var i in o)
 	{
 		var item = o[i];
         if (typeof(item) == "object"){
-           line += newLine+to_lua(indentMaxLv, item, lines, stackLevel + 1, newIndent, true);
+           line += nl+to_lua(indMaxLv, item, lines, stackLv + 1, newIndent, true);
         }
         else{//basic element
-            line += newLineAndIndent+checkValueStr(item) + ",";
+            line += nlAndIndent+checkValueStr(item) + ",";
         }
     };
   }else {//obj
     for (var k in o) {
       if (typeof(o[k])=="object") {
-          line += newLineAndIndent + checkKey(k) + " = " + to_lua(indentMaxLv, o[k],lines, stackLevel+1, newIndent);
+          line += nlAndIndent + checkKey(k) + " = " + to_lua(indMaxLv, o[k],lines, stackLv+1, newIndent);
       }
       else//basic element
       {
-        line += newLineAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ",";
+        line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ",";
       }
     }
   }
 
-  line += (newLine == "" ? "" : newLine+indentStr)  +"}" + (stackLevel == 1? "" : ",");
-  return (stackLevel == 1?"local config=":"")+lines + line + (stackLevel==1?"\r\nreturn config":"");
+  line += (nl == "" ? "" : nl+indStr)  +"}" + (stackLv == 1? "" : ",");
+  return (stackLv == 1?"local config=":"")+lines + line + (stackLv==1?"\r\nreturn config":"");
 }
 
 function to_erlang(jsonObj)
