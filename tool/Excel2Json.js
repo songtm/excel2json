@@ -1057,6 +1057,8 @@ try {
 					excels.push(objArgs(i) );
 				}else{
 					W.Echo(objArgs[i]+":file path not contain:"+g_sourceFolderName);
+					E.Quit();
+					W.Quit(0);
 				}
 				
 			}
@@ -1067,6 +1069,8 @@ try {
 	}
 	if( excels.length == 0 ) {
 		W.Echo("There is no excel files in folder named\r\n" + g_sourceFolderName );
+		E.Quit();
+		W.Quit(0);
 	}
 
 	g_targetFolder = g_sourceFolder + g_targetFolder +"\\"+ g_exportType + "\\";

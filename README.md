@@ -200,8 +200,7 @@ you can easily run the script by double click!
 You may also make your own start script, like an 'excel2json.bat' with which you can run the script
 specifying excel files and output folder name as the arguments.
 
-	MKDIR output
-	WSCRIPT.EXE Excel2Json.js file1.xlsx file2.xlsx product
+	WSCRIPT.EXE D:\Proj\excel2json\tool\Excel2Json.js abs_path_to_excel lua
 
 # HOWTO-WORK #
 
