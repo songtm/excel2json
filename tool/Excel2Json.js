@@ -4,6 +4,7 @@
 // 2019/9/10 #xx{{}}没有$key时会自动转为#xx[{}]
 // 2019/9/13 cs标记: chapter_id#c, chapter_id#s, chapter_id#j表示json表达式
 // 2019/9/18 #__xxx{{}}, 双下划线开头的提层级处理 todo
+// 2019/9/18 table打#c(client only) #s（server only）支持  #__{{}}#c
 /*****
 
 Excel2JSON, Excel - JSON Builder v1.0
@@ -836,7 +837,14 @@ function compileSheet(sheet, rootObject) {
 		if (anchor.charAt(0) != '#') {
 			continue;
 		}
-
+		if (anchor.endsWith("#c") && g_exportType == "erlang") //client only
+		{
+			continue;
+		}
+		if (anchor.endsWith("#s") && g_exportType == "lua") //server only
+		{
+			continue;
+		}
 		scanning.row = row;
 
 		var objectName = "";
@@ -854,7 +862,7 @@ function compileSheet(sheet, rootObject) {
 			scanning.col = col;
 			var key = line[col];
 			if (key.length > 0) {
-				var tagIndex = key.indexOf("#");
+				var tagIndex = key.indexOf("#");//key tag #c  #s #j
 				var tag = "";
 				if (tagIndex >= 0) {
 					tag = key.substring(tagIndex);
