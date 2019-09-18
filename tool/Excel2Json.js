@@ -1,9 +1,8 @@
-// songtianming:2019/9/12 17:36:18扩展支持：
-//WSCRIPT.EXE Excel2Json.js file1.xlsx file2.xlsx product lua  //lua erlang json
-// #_{{}}会精简层级
-// #xx{{}}没有$key时会自动转为#xx[{}]
-// cs标记: chapter_id#c, chapter_id#s, chapter_id#j表示json表达式
-
+// modified by songtianming:2019/9/12 扩展支持：
+// 2019/9/12 "WSCRIPT.EXE" "D:\Proj\excel2json\tool\Excel2Json.js" "%1" "lua"  //lua erlang json
+// 2019/9/09 #_{{}}会精简层级
+// 2019/9/10 #xx{{}}没有$key时会自动转为#xx[{}]
+// 2019/9/13 cs标记: chapter_id#c, chapter_id#s, chapter_id#j表示json表达式
 
 /*****
 
