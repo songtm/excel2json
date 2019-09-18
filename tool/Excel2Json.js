@@ -992,7 +992,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 				line += nl + to_lua(indMaxLv, item, lines, stackLv + 1, newIndent, true);
 			}
 			else {//basic element
-				line += nlAndIndent + checkValueStr(item) + ",";
+				line += nlAndIndent + checkValueStr(item) + ", ";
 			}
 		};
 	} else {//obj
@@ -1004,7 +1004,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
 							line += nlAndIndent + checkKey(kk) + " = " + to_lua(indMaxLv, oo[kk], lines, stackLv + 1, newIndent);
 						} else {
-							line += nlAndIndent + checkKey(kk) + " = " + checkValueStr(oo[kk]) + ",";
+							line += nlAndIndent + checkKey(kk) + " = " + checkValueStr(oo[kk]) + ", ";
 						}
 					}
 				} else {
@@ -1014,12 +1014,12 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 			}
 			else//basic element
 			{
-				line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ",";
+				line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ", ";
 			}
 		}
 	}
 
-	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ",");
+	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ", ");
 	return (stackLv == 1 ? "local config=" : "") + lines + line + (stackLv == 1 ? "\r\nreturn config" : "");
 }
 
