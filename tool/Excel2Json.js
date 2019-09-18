@@ -1052,10 +1052,9 @@ try {
 	if( objArgs.length > 0 ) {
 		for (i = 0; i < objArgs.length; i++)
 		{
-			W.Echo(objArgs[i]);
 			if( isExcel( objArgs(i) ) ) {
 				if (objArgs(i).indexOf(g_sourceFolderName) >= 0) {
-					g_sourceFolder = objArgs(i).substring(objArgs(i).indexOf(g_sourceFolderName));
+					g_sourceFolder = objArgs(i).substring(0, objArgs(i).indexOf(g_sourceFolderName));
 					excels.push(objArgs(i) );
 				}else{
 					W.Echo(objArgs[i]+":file path not contain:"+g_sourceFolderName);
@@ -1071,12 +1070,17 @@ try {
 		W.Echo("There is no excel files in folder named\r\n" + g_sourceFolderName );
 	}
 
-	E.Quit();
-	W.Quit(0);
-
-
-	g_targetFolder = g_sourceFolder + g_targetFolder;
+	g_targetFolder = g_sourceFolder + g_targetFolder +"\\"+ g_exportType + "\\";
+	g_sourceFolder = g_sourceFolder + g_sourceFolderName+"\\";
 	g_targetFolder = assertTraillingOneSlash( g_targetFolder );
+	if( !F.FolderExists( g_targetFolder ) ) {
+		F.CreateFolder( g_targetFolder );
+	}
+
+	// W.Echo(g_sourceFolder + "\r\n"+g_targetFolder);
+	// E.Quit();
+	// W.Quit(0);
+
 	for( var i in excels )
 	{
 		var jsonObj = parseExcel(excels[i]);
