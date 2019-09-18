@@ -998,7 +998,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	} else {//obj
 		for (var k in o) {
 			if (typeof (o[k]) == "object") {
-				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 1) == g_upgradeKey) {//提层级
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//提层级
 					var oo = o[k];
 					for (var kk in oo) {//把子级的数据拉到父级来直接处理了！
 						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
@@ -1020,7 +1020,6 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	}
 
 	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ",");
-	return lines + line;
 	return (stackLv == 1 ? "local config=" : "") + lines + line + (stackLv == 1 ? "\r\nreturn config" : "");
 }
 
