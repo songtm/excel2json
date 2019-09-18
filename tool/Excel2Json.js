@@ -102,7 +102,8 @@ var g_localConfig = g_scriptFolder + "Excel2Json.config.js";
 
 // Default Configuration
 // DO NOT CHANGE THIS VALUE, MAKE Excel2Json.config.js FILE AND COPY THESE LINES AND EDIT THEM!!
-var g_sourceFolder = g_scriptFolder;
+var g_sourceFolder = g_scriptFolder; //excel source folder
+var g_sourceFolderName = "excel_root";
 var g_targetFolder = "output"; // subdirectory in g_sourceFolder
 var g_exportType = "lua";// 导出类型 lua,json, erlang
 var g_tempSuffix = ".$$$";
@@ -1051,22 +1052,28 @@ try {
 	if( objArgs.length > 0 ) {
 		for (i = 0; i < objArgs.length; i++)
 		{
+			W.Echo(objArgs[i]);
 			if( isExcel( objArgs(i) ) ) {
-				excels.push( g_sourceFolder + objArgs(i) );
+				if (objArgs(i).indexOf(g_sourceFolderName) >= 0) {
+					g_sourceFolder = objArgs(i).substring(objArgs(i).indexOf(g_sourceFolderName));
+					excels.push(objArgs(i) );
+				}else{
+					W.Echo(objArgs[i]+":file path not contain:"+g_sourceFolderName);
+				}
+				
 			}
-		}
-		if( !isExcel( objArgs( objArgs.length - 2) ) ) {
-			g_targetFolder = objArgs( objArgs.length - 2);
 		}
 		if( !isExcel( objArgs( objArgs.length - 1) ) ) {
 			g_exportType = objArgs( objArgs.length - 1);
 		}
-	} else {
-		excels = getExcelFiles(g_sourceFolder);
 	}
 	if( excels.length == 0 ) {
-		W.Echo("There is no excel files in\r\n" + g_sourceFolder );
+		W.Echo("There is no excel files in folder named\r\n" + g_sourceFolderName );
 	}
+
+	E.Quit();
+	W.Quit(0);
+
 
 	g_targetFolder = g_sourceFolder + g_targetFolder;
 	g_targetFolder = assertTraillingOneSlash( g_targetFolder );
