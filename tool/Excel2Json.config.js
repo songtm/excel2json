@@ -1,5 +1,4 @@
-// var g_sourceFolder = g_scriptFolder+"..\\";
+// ; songtianming:2019/9/18
 var g_sourceFolderName = "excel_root";
-// var g_targetFolder = "output"; // subdirectory in g_sourceFolder
 var g_tempSuffix = ".$$$";
 var g_prettyOutput = true; // false for compact
