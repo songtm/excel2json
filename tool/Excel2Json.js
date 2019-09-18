@@ -96,6 +96,7 @@ E.Visible = false;
 
 var g_scriptFolder = W.ScriptFullName.replace( W.ScriptName, "" );
 var g_logFd = null;
+var g_enableLog = true;
 var g_popupMsg = "";
 var g_localConfig = g_scriptFolder + "Excel2Json.config.js";
 
@@ -483,6 +484,7 @@ function setScanningFile( csvFile )
 
 function logn( str )
 {
+	if (!g_enableLog) return;
 	//str = String(str).replace("\r\n", "\n").replace("\n", "\r\n");
 	if( g_logFd == null ) {
 		g_logFd = F.OpenTextFile( g_targetFolder + "ExcelJson.log", 2, true, 0 ); // 2: write,  8: append mode
