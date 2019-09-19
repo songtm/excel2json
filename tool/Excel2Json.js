@@ -845,17 +845,22 @@ function compileSheet(sheet, rootObject) {
 		{
 			continue;
 		}
+		if (anchor.endsWith("#c") || anchor.endsWith("#s"))
+			anchor = anchor.substring(0, anchor.length-2);
 		scanning.row = row;
 
 		var objectName = "";
 		var objectType = "";
 		var keyIndex = {};
 		var keyTag = {};
-
-		objectName = String(/#\w+/.exec(anchor));
-		objectType = anchor.substring(objectName.length);
-		objectType = objectType.indexOf("#")>=0 ? objectType.substring(0, objectType.indexOf("#")) : objectType;
-		objectName = objectName.substring(1);
+		if (anchor == "#") {
+			objectName = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+			objectType = "";
+		}else{
+			objectName = String(/#\w+/.exec(anchor));
+			objectType = anchor.substring(objectName.length);
+			objectName = objectName.substring(1);
+		}
 		log("------------------------------------------------------------------------------");
 		parseLog("Found object mark: '" + anchor + "'");
 
