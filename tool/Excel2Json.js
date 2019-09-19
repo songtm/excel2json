@@ -118,6 +118,14 @@ if (F.FileExists(g_localConfig)) {
 	fd.Close();
 	eval(content);
 }
+var tempalteFile = g_scriptFolder+"template.js";
+var g_templates = {};
+if (F.FileExists(tempalteFile)) {
+	var fd = F.OpenTextFile(tempalteFile, 1, false, 0);
+	var content = fd.ReadAll();
+	fd.Close();
+	eval(content);
+}
 
 // Parsing context
 var scanning = {
@@ -1084,6 +1092,8 @@ try {
 	g_targetFolder = g_sourceFolder + g_targetFolder + "\\" + g_exportType + "\\";
 	g_sourceFolder = g_sourceFolder + g_sourceFolderName + "\\";
 	g_targetFolder = assertTraillingOneSlash(g_targetFolder);
+
+	log(g_templates["kv"]);
 	if (!F.FolderExists(g_targetFolder)) {
 		F.CreateFolder(g_targetFolder);
 	}
