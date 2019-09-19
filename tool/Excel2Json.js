@@ -854,6 +854,7 @@ function compileSheet(sheet, rootObject) {
 
 		objectName = String(/#\w+/.exec(anchor));
 		objectType = anchor.substring(objectName.length);
+		objectType = objectType.indexOf("#")>=0 ? objectType.substring(0, objectType.indexOf("#")) : objectType;
 		objectName = objectName.substring(1);
 		log("------------------------------------------------------------------------------");
 		parseLog("Found object mark: '" + anchor + "'");
@@ -887,6 +888,7 @@ function compileSheet(sheet, rootObject) {
 			case "{{}}": compiler = compileObjectObjectTable; break;
 			case "{[]}": compiler = compileObjectArrayTable; break;
 			case "[{}]": compiler = compileArrayObjectTable; break;
+			case "": compiler = getCompiler(keyIndex); break
 			default:
 				popup("Invalid object type marker: " + anchor);
 		}
@@ -902,6 +904,15 @@ function compileSheet(sheet, rootObject) {
 	}
 }
 
+function getCompiler(keyIndex) {
+	if (keyIndex["$key"]) {
+		if (keyIndex["$value"] || keyIndex["$value[]"])
+			return compileSimpleTable;
+		return compileObjectObjectTable;
+	}else{//array
+		return compileArrayObjectTable;
+	}
+}
 function compileSheetArray(sheetArray) {
 	var rootObject = {};
 
