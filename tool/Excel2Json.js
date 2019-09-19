@@ -902,14 +902,19 @@ function compileSheet(sheet, rootObject) {
 			case "{{}}": compiler = compileObjectObjectTable; break;
 			case "{[]}": compiler = compileObjectArrayTable; break;
 			case "[{}]": compiler = compileArrayObjectTable; break;
-			case "": compiler = getCompiler(keyIndex); break
+			case "": compiler = getCompiler(objectName,keyIndex); break
 			default:
 				popup("Invalid object type marker: " + anchor);
 		}
 		if (compiler) {
-			var value = compiler.call(null, sheet, row + 1, keyIndex, keyTag);
+			var value = compiler.call(null, sheet, row + 1, keyIndex, keyTag, objectName);
 			if (value) {
-				rootObject[objectName] = value;
+				if (compiler == compileWithSchema) {
+					var oname = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+					rootObject[oname] = value;
+				}else{
+					rootObject[objectName] = value;
+				}
 			}
 		}
 		//} catch(e) {
@@ -917,8 +922,71 @@ function compileSheet(sheet, rootObject) {
 		//}
 	}
 }
-
-function getCompiler(keyIndex) {
+function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
+	var templateName = objectName+"_"+g_exportType;
+	var line = g_templates[templateName];
+	var prefixholder = ""
+	if (line.indexOf("<--") >= 0) {
+		var match = line.match(/<--([\s\S]*)-->/m);
+		prefixholder = match[0];
+		line = prefixholder.replace("<--", "   ").replace("-->", "   ");
+	}
+	// log(line);
+	var holders = line.match(/%\w+[\,]?%/g);
+	var cellKeys = [];
+	var cellVals = [];
+	var sperators = [];
+	var res = "";
+	for (var index = 0; index < holders.length; index++) {
+		var  holder = holders[index];
+		cellVals.push("");
+		if (holder[holder.length-2] == ",") {
+			sperators.push(",");
+			cellKeys.push(holder.substring(1, holder.length - 2));
+		}
+		else{
+			sperators.push("");
+			cellKeys.push(holder.substring(1, holder.length - 1));
+		}
+	}
+	// log("xxxxxxxxx"+holders.Array());
+	// value = value.replace(new RegExp("\"", "gm"), "\\\"");//gm global mutiline
+	while (sheet[row] != undefined) {
+		var isSane = false;
+		for (var index = 0; index < cellKeys.length; index++) {
+			var  cellKey = cellKeys[index];
+			var col = keyIndex[cellKey];
+			if (col) {
+				var val = sheet[row][col]
+				if (val) isSane = true;
+				cellVals[index] = val;
+			}else {
+				var msg =  "Error: can't find key ["+ cellKey + "] for template:"+templateName;
+				popup(msg);
+				return;
+			}
+		}
+		if (!isSane) {
+			break;
+		}
+		var newLine = line;
+		for (var index = 0; index < cellVals.length; index++) {
+			newLine = newLine.replace(holders[index], cellVals[index]);
+		}
+		res += newLine + "\r\n";
+		// log(newLine);
+		row++;
+	}
+	if (prefixholder != "") {
+		return g_templates[templateName].replace(prefixholder, res);
+	}
+	return res;
+}
+function getCompiler(objName, keyIndex) {
+	// log(g_templates[objName+"_"+g_exportType])
+	if (g_templates[objName+"_"+g_exportType]){
+		return compileWithSchema;
+	}
 	if (keyIndex["$key"]) {
 		if (keyIndex["$value"] || keyIndex["$value[]"])
 			return compileSimpleTable;
@@ -1047,7 +1115,11 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 			}
 			else//basic element
 			{
-				line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ", ";
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
+					line += nl + o[k];
+				}else{
+					line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ", ";
+				}
 			}
 		}
 	}
@@ -1093,7 +1165,6 @@ try {
 	g_sourceFolder = g_sourceFolder + g_sourceFolderName + "\\";
 	g_targetFolder = assertTraillingOneSlash(g_targetFolder);
 
-	log(g_templates["kv"]);
 	if (!F.FolderExists(g_targetFolder)) {
 		F.CreateFolder(g_targetFolder);
 	}
