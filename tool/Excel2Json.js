@@ -5,6 +5,7 @@
 // 2019/9/13 cs标记: chapter_id#c, chapter_id#s, chapter_id#j表示json表达式
 // 2019/9/18 #__xxx{{}}, 双下划线开头的提层级处理 todo
 // 2019/9/18 table打#c(client only) #s（server only）支持  #__{{}}#c
+// 2019/9/19 简化常见需求： table第一列 直接打个#就可以了
 /*****
 
 Excel2JSON, Excel - JSON Builder v1.0
