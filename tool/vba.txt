@@ -58,21 +58,43 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
     toArrayOrTuple = RemoveLastChar(str, ",") + suffix
 End Function
 
-Public Function toArrayOfTuple(ParamArray tokens())
-    Dim i As Long
-    Dim str As String
-    str = "["
-    
+Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     Dim items, item
+    Dim cout As Integer
+    cout = 0
+    Dim arrStr As String, tupleStr As String
+    arrStr = "["
+    tupleStr = "{"
     For Each items In tokens
-        For Each item In items
-            str = str + item + ","
-        Next
+        If TypeOf items Is Object  Then
+            For Each item In items
+                If item <> "" Then
+                    tupleStr = tupleStr + CStr(item) + ","
+                    cout = cout + 1
+                    If cout >= tupleMemNum Then
+                        tupleStr = RemoveLastChar(tupleStr, ",") + "}"
+                        arrStr = arrStr + tupleStr + ","
+                        tupleStr = "{"
+                        cout = 0
+                    End If
+                End If
+            Next
+        Else
+            If items <> "" Then
+                tupleStr = tupleStr + CStr(items) + ","
+                cout = cout + 1
+                If cout >= tupleMemNum Then
+                    tupleStr = RemoveLastChar(tupleStr, ",") + "}"
+                    arrStr = arrStr + tupleStr + ","
+                    tupleStr = "{"
+                    cout = 0
+                End If
+            End If
+        End If
     Next
-    
-    str = str + "]"
-    toArrayOfTuple = str
+    toArrayOfTuple = RemoveLastChar(arrStr, ",") + "]"
 End Function
+
 
 
 
