@@ -45,12 +45,12 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
         If TypeOf items Is Object  Then
             For Each item In items
                 If item <> "" Then
-                    str = str + item + ","
+                    str = str + Cstr(item) + ","
                 End If
             Next
         Else
             If items <> "" Then
-                str = str + items + ","
+                str = str + Cstr(items) + ","
             End If
         End If
         
