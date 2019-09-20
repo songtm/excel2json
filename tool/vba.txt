@@ -93,7 +93,7 @@ Private Function toMapHelper(prefix As String, suffix As String, eqStr As String
         For Each item In items
             col = col + 1
             If item <> "" Then
-                Debug.Print (item)
+                'Debug.Print (item)
                 Count = Count + 1
                 If Count <= keyNum Then
                     keys(Count) = CStr(item)
