@@ -1,0 +1,79 @@
+Public Function printf(mask As String, ParamArray tokens()) As String
+    Dim i As Long
+    For i = 0 To UBound(tokens)
+        mask = Replace$(mask, "{" & i & "}", tokens(i))
+    Next
+    printf = mask
+End Function
+
+Private Function EndsWith(str As String, ending As String) As Boolean
+     Dim endingLen As Integer
+     endingLen = Len(ending)
+     EndsWith = (Right(Trim(UCase(str)), endingLen) = UCase(ending))
+End Function
+
+Private Function StartsWith(str As String, start As String) As Boolean
+     Dim startLen As Integer
+     startLen = Len(start)
+     StartsWith = (Left(Trim(UCase(str)), startLen) = UCase(start))
+End Function
+
+Function RemoveLastChar(str As String, lastChar As String)
+    If Len(str) <> 0 Then
+        If Right$(str, 1) = lastChar Then str = Left$(str, Len(str) - 1)
+    End If
+    RemoveLastChar = str
+End Function
+
+Public Function toArray(ParamArray tokens())
+    Dim x
+    x = tokens
+    toArray = toArrayOrTuple("[", "]", x)
+End Function
+
+Public Function toTuple(ParamArray tokens())
+    Dim x
+    x = tokens
+    toTuple = toArrayOrTuple("{", "}", x)
+End Function
+
+Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
+    Dim i As Long, str As String
+    str = prefix
+    Dim items, item
+    For Each items In tokens
+        If TypeOf items Is Object  Then
+            For Each item In items
+                If item <> "" Then
+                    str = str + item + ","
+                End If
+            Next
+        Else
+            If items <> "" Then
+                str = str + items + ","
+            End If
+        End If
+        
+    Next
+    toArrayOrTuple = RemoveLastChar(str, ",") + suffix
+End Function
+
+Public Function toArrayOfTuple(ParamArray tokens())
+    Dim i As Long
+    Dim str As String
+    str = "["
+    
+    Dim items, item
+    For Each items In tokens
+        For Each item In items
+            str = str + item + ","
+        Next
+    Next
+    
+    str = str + "]"
+    toArrayOfTuple = str
+End Function
+
+
+
+
