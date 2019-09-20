@@ -82,16 +82,42 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     toArrayOfTuple = RemoveLastChar(arrStr, ",") + "]"
 End Function
 
-Public Function toErlangMap(ParamArray tokens())
+Private Function toMapHelper(prefix As String, suffix As String, eqStr As String, keyNum As Integer, tokens)
+    Dim keys() As String
+    ReDim keys(keyNum)
+    Dim cout As Integer, col As Integer
+    Count = 0
+    Dim resStr As String
+    resStr = prefix
     For Each items In tokens
-        Debug.Print ("----")
         For Each item In items
+            col = col + 1
             If item <> "" Then
                 Debug.Print (item)
+                Count = Count + 1
+                If Count <= keyNum Then
+                    keys(Count) = CStr(item)
+                Else
+                    resStr = resStr + keys(col - keyNum) + eqStr + CStr(item) + ","
+                End If
             End If
         Next
     Next
+    toMapHelper = RemoveLastChar(resStr, ",") + suffix
 End Function
+
+Public Function toErlangMap(keyNum As Integer, ParamArray tokens())
+    Dim x
+    x = tokens
+    toErlangMap = toMapHelper("#{", "}", " => ", keyNum, x)
+End Function
+
+Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
+    Dim x
+    x = tokens
+    toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
+End Function
+
 
 
 
