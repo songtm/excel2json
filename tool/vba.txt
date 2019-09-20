@@ -45,12 +45,12 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
         If TypeOf items Is Object  Then
             For Each item In items
                 If item <> "" Then
-                    str = str + Cstr(item) + ","
+                    str = str + CStr(item) + ","
                 End If
             Next
         Else
             If items <> "" Then
-                str = str + Cstr(items) + ","
+                str = str + CStr(items) + ","
             End If
         End If
         
@@ -58,9 +58,11 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
     toArrayOrTuple = RemoveLastChar(str, ",") + suffix
 End Function
 
+'// [{1001, 2}, {2001, 3}, {3001, 4}] ；tupleMemNum为1的话生成[{1,xx},{2,xxx}]
 Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     Dim items, item
-    Dim cout As Integer
+    Dim cout As Integer, tupleIndex As Integer
+    tupleIndex = 1
     cout = 0
     Dim arrStr As String, tupleStr As String
     arrStr = "["
@@ -68,9 +70,13 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     For Each items In tokens
         For Each item In items
             If item <> "" Then
+                If tupleMemNum = 1 Then
+                    tupleStr = tupleStr + CStr(tupleIndex) + ","
+                End If
                 tupleStr = tupleStr + CStr(item) + ","
                 cout = cout + 1
                 If cout >= tupleMemNum Then
+                    tupleIndex = tupleIndex + 1
                     tupleStr = RemoveLastChar(tupleStr, ",") + "}"
                     arrStr = arrStr + tupleStr + ","
                     tupleStr = "{"
@@ -117,6 +123,7 @@ Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
     x = tokens
     toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
 End Function
+
 
 
 
