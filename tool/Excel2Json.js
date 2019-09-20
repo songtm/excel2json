@@ -1045,7 +1045,11 @@ function getPrettyValue(value, tag, row, col) {
 	if (value == "") return "";
 	if (typeof (value) == "number") return value;
 	if (typeof (value) == "string" && isFinite(value)) return Number(value);
-	if (tag == undefined || tag.indexOf("j") == -1) {
+	if (tag == undefined || tag.indexOf("j") == -1) {//normal string
+		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]"))
+		{
+			return String(value).replace("[", "{").replace("]", "}");
+		}
 		return String(value);
 	} else {//json str
 		try {
