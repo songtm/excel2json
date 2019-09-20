@@ -66,22 +66,9 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     arrStr = "["
     tupleStr = "{"
     For Each items In tokens
-        If TypeOf items Is Object  Then
-            For Each item In items
-                If item <> "" Then
-                    tupleStr = tupleStr + CStr(item) + ","
-                    cout = cout + 1
-                    If cout >= tupleMemNum Then
-                        tupleStr = RemoveLastChar(tupleStr, ",") + "}"
-                        arrStr = arrStr + tupleStr + ","
-                        tupleStr = "{"
-                        cout = 0
-                    End If
-                End If
-            Next
-        Else
-            If items <> "" Then
-                tupleStr = tupleStr + CStr(items) + ","
+        For Each item In items
+            If item <> "" Then
+                tupleStr = tupleStr + CStr(item) + ","
                 cout = cout + 1
                 If cout >= tupleMemNum Then
                     tupleStr = RemoveLastChar(tupleStr, ",") + "}"
@@ -90,9 +77,20 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
                     cout = 0
                 End If
             End If
-        End If
+        Next
     Next
     toArrayOfTuple = RemoveLastChar(arrStr, ",") + "]"
+End Function
+
+Public Function toErlangMap(ParamArray tokens())
+    For Each items In tokens
+        Debug.Print ("----")
+        For Each item In items
+            If item <> "" Then
+                Debug.Print (item)
+            End If
+        Next
+    Next
 End Function
 
 
