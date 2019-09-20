@@ -1,3 +1,9 @@
+'songtianming 2019/9/19 19:00:59 加速复杂配置表结构生成
+
+Public Function toStr(str As String)
+    str = Replace(str, """", "\""")
+    toStr = Chr(34) & str & Chr(34)
+End Function
 
 
 Public Function printf(mask As String, ParamArray tokens()) As String
@@ -124,11 +130,6 @@ Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
     Dim x
     x = tokens
     toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
-End Function
-
-Public Function toStr(str As String)
-    str = Replace(str, """", "\""")
-    toStr = Chr(34) & str & Chr(34)
 End Function
 
 
