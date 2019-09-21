@@ -1139,7 +1139,7 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
 	var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
 	var startMapStr = stackLv == 1 ? "#{" : ""
-	var endMapSTr = stackLv == 1 ? "}." : ""
+	var endMapSTr = stackLv == 1 ? "}." : ", "
 
 	var startBracket = o instanceof Array ? "[" : "{"
 	var endBracket = o instanceof Array ? "]" : "}"
@@ -1154,6 +1154,8 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 				line += nlAndIndent + checkValueStr(item) + ", ";
 			}
 		};
+		if (line.endsWith(", ")) line = line.substring(0, line.length - 2)
+
 	} else {//obj
 		for (var k in o) {
 			if (typeof (o[k]) == "object") {
@@ -1163,7 +1165,7 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
 							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + to_erlang(indMaxLv, oo[kk], lines, stackLv + 1, newIndent) + endMapSTr;
 						} else {
-							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + checkValueStr(oo[kk]) + ", " + endMapSTr;
+							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + checkValueStr(oo[kk]) + endMapSTr;
 						}
 					}
 				} else {
@@ -1176,15 +1178,17 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
 					line += nl + o[k];
 				} else {
-					line += nlAndIndent + startMapStr + checkKey(k) + " => " + checkValueStr(o[k]) + ", " + endMapSTr;
+					line += nlAndIndent + startMapStr + checkKey(k) + " => " + checkValueStr(o[k]) + endMapSTr;
 				}
 			}
 		}
+		if (line.endsWith(", ")) line = line.substring(0, line.length - 2)
+
 	}
 	if (stackLv == 1)
 		line += "";
 	else {
-		line += (nl == "" ? "" : nl + indStr) + endBracket + ","
+		line += (nl == "" ? "" : nl + indStr) + endBracket + ""   //todo check????? +","
 	}
 
 	return lines + line;
