@@ -7,6 +7,8 @@
 // 2019/9/18 table打#c(client only) #s（server only）支持  #__{{}}#c
 // 2019/9/19 简化常见需求： table第一列 直接打个#就可以了
 // 2019/9/21 初步支持json -> erlang
+// 2019/9/21 支持数组 names[],  names[1], names[2]... todo check this
+
 /*****
 
 Excel2JSON, Excel - JSON Builder v1.0
@@ -715,7 +717,14 @@ function processArrayCols(keyIndex, keyTag, key, sheet, row) {
 			break;
 		}
 	}
+	var arrayKey = key+"[]"
+	if (keyIndex[arrayKey]) {
+		var arrayRes = readCSVLine(sheet[row][keyIndex[arrayKey]]);
+		return arrayRes.concat(res);
+	}
+	return res;
 }
+
 function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 	var keyCol = keyIndex["$key"];
 	var isArrayValue = false;
@@ -728,7 +737,7 @@ function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 
 	var valCol = keyIndex["$value"];
 	if (valCol == undefined) {
-		valCol = keyIndex["$value[]"];
+		valCol = keyIndex["$value[]"] || keyIndex["$value[1]"];
 		isArrayValue = true;
 	} else {
 		if (keyIndex["$value[]"] != undefined) {
@@ -737,14 +746,14 @@ function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 		}
 	}
 	if (valCol == undefined) {
-		popup("$value or $value[] COLUMN NOT FOUND");
+		popup("$value or $value[] or $value[1] COLUMN NOT FOUND");
 		return null;
 	}
 
 	log("Using key index: " + keyCol + " value index: " + valCol);
 	while (sheet[row] != undefined && sheet[row][keyCol] != undefined && sheet[row][keyCol]) {
 		if (isArrayValue) {
-			value[sheet[row][keyCol]] = readCSVLine(sheet[row][valCol]);
+			value[sheet[row][keyCol]] = processArrayCols(keyIndex, keyTag, "$value", sheet, row);
 		} else {
 			value[sheet[row][keyCol]] = getPrettyValue(sheet[row][valCol], keyTag["$value"], row, valCol);
 		}
@@ -770,9 +779,11 @@ function compileObjectObjectTable(sheet, row, keyIndex, keyTag) {
 		for (subkey in keyIndex) {
 			if (subkey == "$key") continue;
 			var valCol = keyIndex[subkey];
-			if (subkey.endsWith("[]")) {
-				subkey = subkey.substr(0, subkey.length - 2);
-				obj[subkey] = readCSVLine(sheet[row][valCol]);
+			if (subkey.endsWith("]")) {
+				subkey = subkey.substr(0, subkey.indexOf("["));
+				if (!obj[subkey]) {
+					obj[subkey] = processArrayCols(keyIndex, keyTag, subkey, sheet, row);
+				}
 			} else {
 				obj[subkey] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
 			}
@@ -791,11 +802,13 @@ function compileArrayObjectTable(sheet, row, keyIndex, keyTag) {
 		var isSane = false;
 		for (subkey in keyIndex) {
 			var valCol = keyIndex[subkey];
-			if (subkey.endsWith("[]")) {
-				subkey = subkey.substr(0, subkey.length - 2);
-				obj[subkey] = readCSVLine(sheet[row][valCol]);
-				if (obj[subkey].length > 0) {
-					isSane = true;
+			if (subkey.endsWith("]")) {
+				subkey = subkey.substr(0, subkey.indexOf("["));
+				if (!obj[subkey]) {
+					obj[subkey] = processArrayCols(keyIndex, keyTag, subkey, sheet, row);
+					if (obj[subkey].length > 0) {
+						isSane = true;
+					}
 				}
 			} else {
 				obj[subkey] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
