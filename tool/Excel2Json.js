@@ -1,4 +1,6 @@
-// modified by songtianming:2019/9/12 扩展支持：
+// modified by songtianming:2019/9/12; excel的读取部分保留https://github.com/coolengineer/excel2json,tag语义已做大幅修改!
+// 复杂的数据结构用框架下面的SAddin在excel中快速实现! 由于json的限制,不支持erlang中的tuple语义,只支持变长数组!
+
 // 2019/9/12 "WSCRIPT.EXE" "D:\Proj\excel2json\tool\Excel2Json.js" "%1" "lua"  //lua erlang json
 // 2019/9/09 #__{{}}会忽略其它table
 // 2019/9/10 #xx{{}}没有$key时会自动转为#xx[{}]
