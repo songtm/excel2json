@@ -1065,6 +1065,7 @@ function getPrettyValue(value, tag, row, col) {
 }
 
 function checkKey(k) {
+	if (g_exportType == "erlang") return k;
 	k = getPrettyValue(k);
 	if (typeof (k) == "number") {
 		return "[" + k + "]";
@@ -1193,7 +1194,6 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 
 	return lines + line;
 }
-
 try {
 	g_sourceFolder = assertTraillingOneSlash(g_sourceFolder);
 
