@@ -2,7 +2,7 @@
 // 2019/9/12 "WSCRIPT.EXE" "D:\Proj\excel2json\tool\Excel2Json.js" "%1" "lua"  //lua erlang json
 // 2019/9/09 #__{{}}会忽略其它table
 // 2019/9/10 #xx{{}}没有$key时会自动转为#xx[{}]
-// 2019/9/13 csx标记: chapter_id#c, chapter_id#s, chapter_id#x表示不导出， chapter_id#j表示json表达式 
+// 2019/9/13 csx标记: chapter_id#c, chapter_id#s, chapter_id#x表示不导出， chapter_id#j表示json表达式
 // 2019/9/18 #__xxx{{}}, 双下划线开头的提层级处理 todo
 // 2019/9/18 table打#c(client only) #s（server only）支持  #__{{}}#c
 // 2019/9/19 简化常见需求： table第一列 直接打个#就可以了
@@ -1084,8 +1084,10 @@ function checkValueStr(value) {
 	}
 	return value
 }
-
 function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
+  return "local config=" + exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) + "\r\nreturn config"
+}
+function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	var nl = stackLv <= indMaxLv ? "\r\n" : "";
 	var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
 	var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
@@ -1130,7 +1132,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	}
 
 	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ", ");
-	return (stackLv == 1 ? "local config=" : "") + lines + line + (stackLv == 1 ? "\r\nreturn config" : "");
+  	return lines + line;
 }
 
 function to_erlang(jsonObj) {
