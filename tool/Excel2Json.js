@@ -702,6 +702,20 @@ function readCSVFile(csvFile) {
 	return sheet;
 }
 
+function processArrayCols(keyIndex, keyTag, key, sheet, row) {
+	var res = [];
+	var count = 1
+	while (true) {
+		var curKey = key+"["+count + "]"
+		var curCol = keyIndex[curKey];
+		if (curCol != undefined && sheet[row][curCol] != undefined && sheet[row][curCol]){
+			res.push(getPrettyValue(sheet[row][curCol], keyTag[curKey], row, curCol));
+		}
+		else {
+			break;
+		}
+	}
+}
 function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 	var keyCol = keyIndex["$key"];
 	var isArrayValue = false;
