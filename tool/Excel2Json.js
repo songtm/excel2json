@@ -1097,7 +1097,7 @@ function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 		for (var i in o) {
 			var item = o[i];
 			if (typeof (item) == "object") {
-				line += nl + to_lua(indMaxLv, item, lines, stackLv + 1, newIndent, true);
+				line += nl + exportHelper(indMaxLv, item, lines, stackLv + 1, newIndent, true);
 			}
 			else {//basic element
 				line += nlAndIndent + checkValueStr(item) + ", ";
@@ -1110,13 +1110,13 @@ function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 					var oo = o[k];
 					for (var kk in oo) {//把子级的数据拉到父级来直接处理了！
 						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
-							line += nlAndIndent + checkKey(kk) + " = " + to_lua(indMaxLv, oo[kk], lines, stackLv + 1, newIndent);
+							line += nlAndIndent + checkKey(kk) + " = " + exportHelper(indMaxLv, oo[kk], lines, stackLv + 1, newIndent);
 						} else {
 							line += nlAndIndent + checkKey(kk) + " = " + checkValueStr(oo[kk]) + ", ";
 						}
 					}
 				} else {
-					line += nlAndIndent + checkKey(k) + " = " + to_lua(indMaxLv, o[k], lines, stackLv + 1, newIndent);
+					line += nlAndIndent + checkKey(k) + " = " + exportHelper(indMaxLv, o[k], lines, stackLv + 1, newIndent);
 				}
 
 			}
