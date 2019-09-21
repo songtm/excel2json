@@ -1141,7 +1141,9 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	var startMapStr = stackLv == 1 ? "#{" : ""
 	var endMapSTr = stackLv == 1 ? "}." : ""
 
-	var line = stackLv != 1 ? ((prtIsArr ? indStr : "") + "{") : "";
+	var startBracket = o instanceof Array ? "[" : "{"
+	var endBracket = o instanceof Array ? "]" : "}"
+	var line = stackLv != 1 ? ((prtIsArr ? indStr : "") + startBracket) : "";
 	if (o instanceof Array) {//array
 		for (var i in o) {
 			var item = o[i];
@@ -1182,7 +1184,7 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	if (stackLv == 1)
 		line += "";
 	else {
-		line += (nl == "" ? "" : nl + indStr) + "},"
+		line += (nl == "" ? "" : nl + indStr) + endBracket + ","
 	}
 
 	return lines + line;
