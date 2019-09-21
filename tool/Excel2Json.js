@@ -1244,7 +1244,9 @@ try {
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang") {
-			str = to_erlang(jsonObj);
+			var lines = [];
+			var indentLv = jsonObj instanceof Array ? 1 : 2;
+			str = to_lua(indentLv, jsonObj, "", 1, "", false);;
 			ext = ".config";
 		}
 
