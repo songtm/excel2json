@@ -118,7 +118,7 @@ if (F.FileExists(g_localConfig)) {
 	fd.Close();
 	eval(content);
 }
-var tempalteFile = g_scriptFolder+"template.js";
+var tempalteFile = g_scriptFolder + "template.js";
 var g_templates = {};
 if (F.FileExists(tempalteFile)) {
 	var fd = F.OpenTextFile(tempalteFile, 1, false, 0);
@@ -855,7 +855,7 @@ function compileSheet(sheet, rootObject) {
 			continue;
 		}
 		if (anchor.endsWith("#c") || anchor.endsWith("#s"))
-			anchor = anchor.substring(0, anchor.length-2);
+			anchor = anchor.substring(0, anchor.length - 2);
 		scanning.row = row;
 
 		var objectName = "";
@@ -863,9 +863,9 @@ function compileSheet(sheet, rootObject) {
 		var keyIndex = {};
 		var keyTag = {};
 		if (anchor == "#") {
-			objectName = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+			objectName = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '') + row;
 			objectType = "";
-		}else{
+		} else {
 			objectName = String(/#\w+/.exec(anchor));
 			objectType = anchor.substring(objectName.length);
 			objectName = objectName.substring(1);
@@ -903,7 +903,7 @@ function compileSheet(sheet, rootObject) {
 			case "{{}}": compiler = compileObjectObjectTable; break;
 			case "{[]}": compiler = compileObjectArrayTable; break;
 			case "[{}]": compiler = compileArrayObjectTable; break;
-			case "": compiler = getCompiler(objectName,keyIndex); break
+			case "": compiler = getCompiler(objectName, keyIndex); break
 			default:
 				popup("Invalid object type marker: " + anchor);
 		}
@@ -911,9 +911,9 @@ function compileSheet(sheet, rootObject) {
 			var value = compiler.call(null, sheet, row + 1, keyIndex, keyTag, objectName);
 			if (value) {
 				if (compiler == compileWithSchema) {
-					var oname = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+					var oname = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '') + row;
 					rootObject[oname] = value;
-				}else{
+				} else {
 					rootObject[objectName] = value;
 				}
 			}
@@ -924,7 +924,7 @@ function compileSheet(sheet, rootObject) {
 	}
 }
 function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
-	var templateName = objectName+"_"+g_exportType;
+	var templateName = objectName + "_" + g_exportType;
 	var line = g_templates[templateName];
 	var prefixholder = ""
 	if (line.indexOf("<--") >= 0) {
@@ -939,13 +939,13 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 	var sperators = [];
 	var res = "";
 	for (var index = 0; index < holders.length; index++) {
-		var  holder = holders[index];
+		var holder = holders[index];
 		cellVals.push("");
-		if (holder[holder.length-2] == ",") {
+		if (holder[holder.length - 2] == ",") {
 			sperators.push(",");
 			cellKeys.push(holder.substring(1, holder.length - 2));
 		}
-		else{
+		else {
 			sperators.push("");
 			cellKeys.push(holder.substring(1, holder.length - 1));
 		}
@@ -955,14 +955,14 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 	while (sheet[row] != undefined) {
 		var isSane = false;
 		for (var index = 0; index < cellKeys.length; index++) {
-			var  cellKey = cellKeys[index];
+			var cellKey = cellKeys[index];
 			var col = keyIndex[cellKey];
 			if (col) {
 				var val = sheet[row][col]
 				if (val) isSane = true;
 				cellVals[index] = val;
-			}else {
-				var msg =  "Error: can't find key ["+ cellKey + "] for template:"+templateName;
+			} else {
+				var msg = "Error: can't find key [" + cellKey + "] for template:" + templateName;
 				popup(msg);
 				return;
 			}
@@ -985,14 +985,14 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 }
 function getCompiler(objName, keyIndex) {
 	// log(g_templates[objName+"_"+g_exportType])
-	if (g_templates[objName+"_"+g_exportType]){
+	if (g_templates[objName + "_" + g_exportType]) {
 		return compileWithSchema;
 	}
 	if (keyIndex["$key"]) {
 		if (keyIndex["$value"] || keyIndex["$value[]"])
 			return compileSimpleTable;
 		return compileObjectObjectTable;
-	}else{//array
+	} else {//array
 		return compileArrayObjectTable;
 	}
 }
@@ -1047,8 +1047,7 @@ function getPrettyValue(value, tag, row, col) {
 	if (typeof (value) == "number") return value;
 	if (typeof (value) == "string" && isFinite(value)) return Number(value);
 	if (tag == undefined || tag.indexOf("j") == -1) {//normal string
-		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]"))
-		{
+		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]")) {
 			return String(value).replace("[", "{").replace("]", "}");
 		}
 		return String(value);
@@ -1085,7 +1084,7 @@ function checkValueStr(value) {
 	return value
 }
 function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
-  return "local config=" + exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) + "\r\nreturn config"
+	return "local config=" + exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) + "\r\nreturn config"
 }
 function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	var nl = stackLv <= indMaxLv ? "\r\n" : "";
@@ -1124,7 +1123,7 @@ function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 			{
 				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
 					line += nl + o[k];
-				}else{
+				} else {
 					line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ", ";
 				}
 			}
@@ -1132,11 +1131,61 @@ function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	}
 
 	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ", ");
-  	return lines + line;
+	return lines + line;
 }
 
-function to_erlang(jsonObj) {
-	return "hello erlang";
+function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
+	var nl = stackLv <= indMaxLv ? "\r\n" : "";
+	var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
+	var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
+	var startMapStr = stackLv == 1 ? "#{" : ""
+	var endMapSTr = stackLv == 1 ? "}." : ""
+
+	var line = stackLv != 1 ? ((prtIsArr ? indStr : "") + "{") : "";
+	if (o instanceof Array) {//array
+		for (var i in o) {
+			var item = o[i];
+			if (typeof (item) == "object") {
+				line += nl + to_erlang(indMaxLv, item, lines, stackLv + 1, newIndent, true);
+			}
+			else {//basic element
+				line += nlAndIndent + checkValueStr(item) + ", ";
+			}
+		};
+	} else {//obj
+		for (var k in o) {
+			if (typeof (o[k]) == "object") {
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//提层级
+					var oo = o[k];
+					for (var kk in oo) {//把子级的数据拉到父级来直接处理了！
+						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
+							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + to_erlang(indMaxLv, oo[kk], lines, stackLv + 1, newIndent) + endMapSTr;
+						} else {
+							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + checkValueStr(oo[kk]) + ", " + endMapSTr;
+						}
+					}
+				} else {
+					line += nlAndIndent + startMapStr + checkKey(k) + " => " + to_erlang(indMaxLv, o[k], lines, stackLv + 1, newIndent) + endMapSTr;
+				}
+
+			}
+			else//basic element
+			{
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
+					line += nl + o[k];
+				} else {
+					line += nlAndIndent + startMapStr + checkKey(k) + " => " + checkValueStr(o[k]) + ", " + endMapSTr;
+				}
+			}
+		}
+	}
+	if (stackLv == 1)
+		line += "";
+	else {
+		line += (nl == "" ? "" : nl + indStr) + "},"
+	}
+
+	return lines + line;
 }
 
 try {
