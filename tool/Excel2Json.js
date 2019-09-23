@@ -1077,7 +1077,7 @@ function getPrettyValue(value, tag, row, col) {
 	if (typeof (value) == "number") return value;
 	if (typeof (value) == "string" && isFinite(value)) return Number(value);
 	if (tag == undefined || tag.indexOf("j") == -1) {//normal string
-		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]")) {
+		if (g_exportType == "lua" && value.substring(0, 1) == "[" && value.endsWith("]")) {
 			return String(value).replace("[", "{").replace("]", "}");
 		}
 		return String(value);
