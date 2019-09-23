@@ -1280,7 +1280,7 @@ try {
 			str = JSON.stringify(jsonObj).split("\n").join("\r\n");
 			ext = ".json";
 		} else if (g_exportType == "lua") {
-			log(JSON.stringify(jsonObj).split("\n").join("\r\n"));
+			// log(JSON.stringify(jsonObj).split("\n").join("\r\n"));
 			var lines = [];
 			var indentLv = jsonObj instanceof Array ? 1 : 2;
 			str = to_lua(indentLv, jsonObj, "", 1, "", false);
