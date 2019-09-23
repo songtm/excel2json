@@ -1180,7 +1180,7 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 		for (var i in o) {
 			var item = o[i];
 			if (typeof (item) == "object") {
-				line += nl + to_erlang(indMaxLv, item, lines, stackLv + 1, newIndent, true);
+				line += nl + to_erlang(indMaxLv, item, lines, stackLv + 1, newIndent, true)+", ";
 			}
 			else {//basic element
 				line += nlAndIndent + checkValueStr(item) + ", ";
@@ -1220,7 +1220,7 @@ function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	if (stackLv == 1)
 		line += "";
 	else {
-		line += (nl == "" ? "" : nl + indStr) + endBracket + ""   //todo check????? +","
+		line += (nl == "" ? "" : nl + indStr) + endBracket
 	}
 
 	return lines + line;
