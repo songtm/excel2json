@@ -1108,6 +1108,12 @@ function checkValueStr(value) {
 	if (typeof (value) == "string") {
 		if (value == "TRUE" || value == "true") return "true";
 		if (value == "FALSE" || value == "false") return "false";
+		if (value.substring(0,1) == '"' && value.endsWith('"')) {
+			return value;
+		}
+		if (value.substring(0,1) == '[' && value.endsWith(']')) return value;
+		if (value.substring(0, 1) == '{' && value.endsWith('}')) return value;
+	
 		if (value.indexOf('"') >= 0) {
 			value = value.replace(new RegExp("\"", "gm"), "\\\"");//gm global mutiline
 		}
