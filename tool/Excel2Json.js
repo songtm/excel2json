@@ -813,7 +813,7 @@ function compileArrayObjectTable(sheet, row, keyIndex, keyTag) {
 						isSane = true;
 					}
 				}
-			} else {
+			} else {				
 				obj[subkey] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
 				if (obj[subkey]) {
 					isSane = true;
@@ -1073,9 +1073,9 @@ function parseExcel(excelFile) {
 }
 
 function getPrettyValue(value, tag, row, col) {
+	if (typeof (value) == "number") return value;
 	if (value == null) return "";
 	if (value == "") return "";
-	if (typeof (value) == "number") return value;
 	if (typeof (value) == "string" && isFinite(value)) return Number(value);
 	if (tag == undefined || tag.indexOf("j") == -1) {//normal string
 		if (g_exportType == "lua" && value.substring(0, 1) == "[" && value.endsWith("]")) {
