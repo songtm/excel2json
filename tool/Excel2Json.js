@@ -718,6 +718,7 @@ function processArrayCols(keyIndex, keyTag, key, sheet, row) {
 		else {
 			break;
 		}
+		count++;
 	}
 	var arrayKey = key+"[]"
 	if (keyIndex[arrayKey]) {
