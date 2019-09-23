@@ -1282,8 +1282,8 @@ try {
 		}
 		else if (g_exportType == "erlang") {
 			var lines = [];
-			var indentLv = jsonObj instanceof Array ? 1 : 2;
-			str = to_lua(indentLv, jsonObj, "", 1, "", false);;
+			var indentLv = 1//jsonObj instanceof Array ? 1 : 2;
+			str = to_erlang(indentLv, jsonObj, "", 1, "", false);;
 			ext = ".config";
 		}
 
