@@ -915,7 +915,7 @@ function compileSheet(sheet, rootObject) {
 					keyTag[key] = tag;
 				}
 				var ignore = false;
-				if (tag.indexOf("x")) ignore = true;
+				if (tag.indexOf("x") >= 0) ignore = true;
 				if (tag.indexOf("c") >= 0 && g_exportType == "erlang") { //client only
 					ignore = true;
 				}
