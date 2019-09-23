@@ -1,11 +1,16 @@
-// modified by songtianming:2019/9/12 扩展支持：
+// modified by songtianming:2019/9/12; excel的读取部分保留https://github.com/coolengineer/excel2json,tag语义已做大幅修改!
+// 复杂的数据结构用框架下面的SAddin在excel中快速实现! 由于json的限制,不支持erlang中的tuple语义,只支持变长数组!
+
 // 2019/9/12 "WSCRIPT.EXE" "D:\Proj\excel2json\tool\Excel2Json.js" "%1" "lua"  //lua erlang json
 // 2019/9/09 #__{{}}会忽略其它table
 // 2019/9/10 #xx{{}}没有$key时会自动转为#xx[{}]
-// 2019/9/13 csx标记: chapter_id#c, chapter_id#s, chapter_id#x表示不导出， chapter_id#j表示json表达式 
+// 2019/9/13 csx标记: chapter_id#c, chapter_id#s, chapter_id#x表示不导出， chapter_id#j表示json表达式
 // 2019/9/18 #__xxx{{}}, 双下划线开头的提层级处理 todo
 // 2019/9/18 table打#c(client only) #s（server only）支持  #__{{}}#c
 // 2019/9/19 简化常见需求： table第一列 直接打个#就可以了
+// 2019/9/21 初步支持json -> erlang
+// 2019/9/21 支持数组 names[],  names[1], names[2]... todo check this
+
 /*****
 
 Excel2JSON, Excel - JSON Builder v1.0
@@ -118,7 +123,7 @@ if (F.FileExists(g_localConfig)) {
 	fd.Close();
 	eval(content);
 }
-var tempalteFile = g_scriptFolder+"template.js";
+var tempalteFile = g_scriptFolder + "template.js";
 var g_templates = {};
 if (F.FileExists(tempalteFile)) {
 	var fd = F.OpenTextFile(tempalteFile, 1, false, 0);
@@ -701,6 +706,27 @@ function readCSVFile(csvFile) {
 	return sheet;
 }
 
+function processArrayCols(keyIndex, keyTag, key, sheet, row) {
+	var res = [];
+	var count = 1
+	while (true) {
+		var curKey = key+"["+count + "]"
+		var curCol = keyIndex[curKey];
+		if (curCol != undefined && sheet[row][curCol] != undefined && sheet[row][curCol]){
+			res.push(getPrettyValue(sheet[row][curCol], keyTag[curKey], row, curCol));
+		}
+		else {
+			break;
+		}
+	}
+	var arrayKey = key+"[]"
+	if (keyIndex[arrayKey]) {
+		var arrayRes = readCSVLine(sheet[row][keyIndex[arrayKey]]);
+		return arrayRes.concat(res);
+	}
+	return res;
+}
+
 function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 	var keyCol = keyIndex["$key"];
 	var isArrayValue = false;
@@ -713,7 +739,7 @@ function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 
 	var valCol = keyIndex["$value"];
 	if (valCol == undefined) {
-		valCol = keyIndex["$value[]"];
+		valCol = keyIndex["$value[]"] || keyIndex["$value[1]"];
 		isArrayValue = true;
 	} else {
 		if (keyIndex["$value[]"] != undefined) {
@@ -722,14 +748,14 @@ function compileSimpleTable(sheet, row, keyIndex, keyTag) {
 		}
 	}
 	if (valCol == undefined) {
-		popup("$value or $value[] COLUMN NOT FOUND");
+		popup("$value or $value[] or $value[1] COLUMN NOT FOUND");
 		return null;
 	}
 
 	log("Using key index: " + keyCol + " value index: " + valCol);
 	while (sheet[row] != undefined && sheet[row][keyCol] != undefined && sheet[row][keyCol]) {
 		if (isArrayValue) {
-			value[sheet[row][keyCol]] = readCSVLine(sheet[row][valCol]);
+			value[sheet[row][keyCol]] = processArrayCols(keyIndex, keyTag, "$value", sheet, row);
 		} else {
 			value[sheet[row][keyCol]] = getPrettyValue(sheet[row][valCol], keyTag["$value"], row, valCol);
 		}
@@ -755,9 +781,11 @@ function compileObjectObjectTable(sheet, row, keyIndex, keyTag) {
 		for (subkey in keyIndex) {
 			if (subkey == "$key") continue;
 			var valCol = keyIndex[subkey];
-			if (subkey.endsWith("[]")) {
-				subkey = subkey.substr(0, subkey.length - 2);
-				obj[subkey] = readCSVLine(sheet[row][valCol]);
+			if (subkey.endsWith("]")) {
+				subkey = subkey.substr(0, subkey.indexOf("["));
+				if (!obj[subkey]) {
+					obj[subkey] = processArrayCols(keyIndex, keyTag, subkey, sheet, row);
+				}
 			} else {
 				obj[subkey] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
 			}
@@ -776,11 +804,13 @@ function compileArrayObjectTable(sheet, row, keyIndex, keyTag) {
 		var isSane = false;
 		for (subkey in keyIndex) {
 			var valCol = keyIndex[subkey];
-			if (subkey.endsWith("[]")) {
-				subkey = subkey.substr(0, subkey.length - 2);
-				obj[subkey] = readCSVLine(sheet[row][valCol]);
-				if (obj[subkey].length > 0) {
-					isSane = true;
+			if (subkey.endsWith("]")) {
+				subkey = subkey.substr(0, subkey.indexOf("["));
+				if (!obj[subkey]) {
+					obj[subkey] = processArrayCols(keyIndex, keyTag, subkey, sheet, row);
+					if (obj[subkey].length > 0) {
+						isSane = true;
+					}
 				}
 			} else {
 				obj[subkey] = getPrettyValue(sheet[row][valCol], keyTag[subkey], row, valCol);
@@ -855,7 +885,7 @@ function compileSheet(sheet, rootObject) {
 			continue;
 		}
 		if (anchor.endsWith("#c") || anchor.endsWith("#s"))
-			anchor = anchor.substring(0, anchor.length-2);
+			anchor = anchor.substring(0, anchor.length - 2);
 		scanning.row = row;
 
 		var objectName = "";
@@ -863,9 +893,9 @@ function compileSheet(sheet, rootObject) {
 		var keyIndex = {};
 		var keyTag = {};
 		if (anchor == "#") {
-			objectName = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+			objectName = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '') + row;
 			objectType = "";
-		}else{
+		} else {
 			objectName = String(/#\w+/.exec(anchor));
 			objectType = anchor.substring(objectName.length);
 			objectName = objectName.substring(1);
@@ -903,7 +933,7 @@ function compileSheet(sheet, rootObject) {
 			case "{{}}": compiler = compileObjectObjectTable; break;
 			case "{[]}": compiler = compileObjectArrayTable; break;
 			case "[{}]": compiler = compileArrayObjectTable; break;
-			case "": compiler = getCompiler(objectName,keyIndex); break
+			case "": compiler = getCompiler(objectName, keyIndex); break
 			default:
 				popup("Invalid object type marker: " + anchor);
 		}
@@ -911,9 +941,9 @@ function compileSheet(sheet, rootObject) {
 			var value = compiler.call(null, sheet, row + 1, keyIndex, keyTag, objectName);
 			if (value) {
 				if (compiler == compileWithSchema) {
-					var oname = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '')+row;
+					var oname = g_upgradeKey + csvFile.replace(/^.*[\\\/]/, '') + row;
 					rootObject[oname] = value;
-				}else{
+				} else {
 					rootObject[objectName] = value;
 				}
 			}
@@ -924,7 +954,7 @@ function compileSheet(sheet, rootObject) {
 	}
 }
 function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
-	var templateName = objectName+"_"+g_exportType;
+	var templateName = objectName + "_" + g_exportType;
 	var line = g_templates[templateName];
 	var prefixholder = ""
 	if (line.indexOf("<--") >= 0) {
@@ -939,13 +969,13 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 	var sperators = [];
 	var res = "";
 	for (var index = 0; index < holders.length; index++) {
-		var  holder = holders[index];
+		var holder = holders[index];
 		cellVals.push("");
-		if (holder[holder.length-2] == ",") {
+		if (holder[holder.length - 2] == ",") {
 			sperators.push(",");
 			cellKeys.push(holder.substring(1, holder.length - 2));
 		}
-		else{
+		else {
 			sperators.push("");
 			cellKeys.push(holder.substring(1, holder.length - 1));
 		}
@@ -955,14 +985,14 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 	while (sheet[row] != undefined) {
 		var isSane = false;
 		for (var index = 0; index < cellKeys.length; index++) {
-			var  cellKey = cellKeys[index];
+			var cellKey = cellKeys[index];
 			var col = keyIndex[cellKey];
 			if (col) {
 				var val = sheet[row][col]
 				if (val) isSane = true;
 				cellVals[index] = val;
-			}else {
-				var msg =  "Error: can't find key ["+ cellKey + "] for template:"+templateName;
+			} else {
+				var msg = "Error: can't find key [" + cellKey + "] for template:" + templateName;
 				popup(msg);
 				return;
 			}
@@ -985,14 +1015,14 @@ function compileWithSchema(sheet, row, keyIndex, keyTag, objectName) {
 }
 function getCompiler(objName, keyIndex) {
 	// log(g_templates[objName+"_"+g_exportType])
-	if (g_templates[objName+"_"+g_exportType]){
+	if (g_templates[objName + "_" + g_exportType]) {
 		return compileWithSchema;
 	}
 	if (keyIndex["$key"]) {
 		if (keyIndex["$value"] || keyIndex["$value[]"])
 			return compileSimpleTable;
 		return compileObjectObjectTable;
-	}else{//array
+	} else {//array
 		return compileArrayObjectTable;
 	}
 }
@@ -1047,8 +1077,7 @@ function getPrettyValue(value, tag, row, col) {
 	if (typeof (value) == "number") return value;
 	if (typeof (value) == "string" && isFinite(value)) return Number(value);
 	if (tag == undefined || tag.indexOf("j") == -1) {//normal string
-		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]"))
-		{
+		if (g_exportType == "lua" && value.startsWith("[") && value.endsWith("]")) {
 			return String(value).replace("[", "{").replace("]", "}");
 		}
 		return String(value);
@@ -1066,6 +1095,7 @@ function getPrettyValue(value, tag, row, col) {
 }
 
 function checkKey(k) {
+	if (g_exportType == "erlang") return k;
 	k = getPrettyValue(k);
 	if (typeof (k) == "number") {
 		return "[" + k + "]";
@@ -1084,8 +1114,10 @@ function checkValueStr(value) {
 	}
 	return value
 }
-
 function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
+	return "local config=" + exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) + "\r\nreturn config"
+}
+function exportHelper(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	var nl = stackLv <= indMaxLv ? "\r\n" : "";
 	var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
 	var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
@@ -1095,7 +1127,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 		for (var i in o) {
 			var item = o[i];
 			if (typeof (item) == "object") {
-				line += nl + to_lua(indMaxLv, item, lines, stackLv + 1, newIndent, true);
+				line += nl + exportHelper(indMaxLv, item, lines, stackLv + 1, newIndent, true);
 			}
 			else {//basic element
 				line += nlAndIndent + checkValueStr(item) + ", ";
@@ -1108,13 +1140,13 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 					var oo = o[k];
 					for (var kk in oo) {//把子级的数据拉到父级来直接处理了！
 						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
-							line += nlAndIndent + checkKey(kk) + " = " + to_lua(indMaxLv, oo[kk], lines, stackLv + 1, newIndent);
+							line += nlAndIndent + checkKey(kk) + " = " + exportHelper(indMaxLv, oo[kk], lines, stackLv + 1, newIndent);
 						} else {
 							line += nlAndIndent + checkKey(kk) + " = " + checkValueStr(oo[kk]) + ", ";
 						}
 					}
 				} else {
-					line += nlAndIndent + checkKey(k) + " = " + to_lua(indMaxLv, o[k], lines, stackLv + 1, newIndent);
+					line += nlAndIndent + checkKey(k) + " = " + exportHelper(indMaxLv, o[k], lines, stackLv + 1, newIndent);
 				}
 
 			}
@@ -1122,7 +1154,7 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 			{
 				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
 					line += nl + o[k];
-				}else{
+				} else {
 					line += nlAndIndent + checkKey(k) + " = " + checkValueStr(o[k]) + ", ";
 				}
 			}
@@ -1130,13 +1162,68 @@ function to_lua(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
 	}
 
 	line += (nl == "" ? "" : nl + indStr) + "}" + (stackLv == 1 ? "" : ", ");
-	return (stackLv == 1 ? "local config=" : "") + lines + line + (stackLv == 1 ? "\r\nreturn config" : "");
+	return lines + line;
 }
 
-function to_erlang(jsonObj) {
-	return "hello erlang";
-}
+function to_erlang(indMaxLv, o, lines, stackLv, indStr, prtIsArr) {
+	var nl = stackLv <= indMaxLv ? "\r\n" : "";
+	var nlAndIndent = stackLv <= indMaxLv ? "\r\n" + indStr + "\t" : "";
+	var newIndent = stackLv <= indMaxLv ? indStr + "\t" : "";
+	var startMapStr = stackLv == 1 ? "#{" : ""
+	var endMapSTr = stackLv == 1 ? "}." : ", "
 
+	var startBracket = o instanceof Array ? "[" : "{"
+	var endBracket = o instanceof Array ? "]" : "}"
+	var line = stackLv != 1 ? ((prtIsArr ? indStr : "") + startBracket) : "";
+	if (o instanceof Array) {//array
+		for (var i in o) {
+			var item = o[i];
+			if (typeof (item) == "object") {
+				line += nl + to_erlang(indMaxLv, item, lines, stackLv + 1, newIndent, true);
+			}
+			else {//basic element
+				line += nlAndIndent + checkValueStr(item) + ", ";
+			}
+		};
+		if (line.endsWith(", ")) line = line.substring(0, line.length - 2)
+
+	} else {//obj
+		for (var k in o) {
+			if (typeof (o[k]) == "object") {
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//提层级
+					var oo = o[k];
+					for (var kk in oo) {//把子级的数据拉到父级来直接处理了！
+						if (typeof (oo[kk]) == "object") {//包含数组;数组的key为[1]
+							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + to_erlang(indMaxLv, oo[kk], lines, stackLv + 1, newIndent) + endMapSTr;
+						} else {
+							line += nlAndIndent + startMapStr + checkKey(kk) + " => " + checkValueStr(oo[kk]) + endMapSTr;
+						}
+					}
+				} else {
+					line += nlAndIndent + startMapStr + checkKey(k) + " => " + to_erlang(indMaxLv, o[k], lines, stackLv + 1, newIndent) + endMapSTr;
+				}
+
+			}
+			else//basic element
+			{
+				if (stackLv == 1 && typeof (k) == "string" && k.substring(0, 2) == g_upgradeKey) {//template schema
+					line += nl + o[k];
+				} else {
+					line += nlAndIndent + startMapStr + checkKey(k) + " => " + checkValueStr(o[k]) + endMapSTr;
+				}
+			}
+		}
+		if (line.endsWith(", ")) line = line.substring(0, line.length - 2)
+
+	}
+	if (stackLv == 1)
+		line += "";
+	else {
+		line += (nl == "" ? "" : nl + indStr) + endBracket + ""   //todo check????? +","
+	}
+
+	return lines + line;
+}
 try {
 	g_sourceFolder = assertTraillingOneSlash(g_sourceFolder);
 
@@ -1193,7 +1280,9 @@ try {
 			ext = ".lua";
 		}
 		else if (g_exportType == "erlang") {
-			str = to_erlang(jsonObj);
+			var lines = [];
+			var indentLv = jsonObj instanceof Array ? 1 : 2;
+			str = to_lua(indentLv, jsonObj, "", 1, "", false);;
 			ext = ".config";
 		}
 
