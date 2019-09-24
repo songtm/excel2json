@@ -1,22 +1,26 @@
-'songtianming 2019/9/19 19:00:59 
+'songtianming 2019/9/19 19:00:59  ???????????
 
 Public Function toStr(str As String)
     str = Replace(str, """", "\""")
     toStr = Chr(34) & str & Chr(34)
 End Function
 
-Private Function checkStr(str As Variant)
+Private Function checkStr(str As Variant, Optional needQuote As Boolean = False)
     Dim res As String
-    
-    If IsNumeric(str) Then
-        res = CStr(str)
+    If needQuote Then
+        If IsNumeric(str) Then
+            res = CStr(str)
+        Else
+            res = CStr(str)
+            If (Left(res, 1) = "[" And Right(res, 1) = "]") Or (Left(res, 1) = "{" And Right(res, 1) = "}") Or res = "false" Or res = "true" Then
+            Else
+                res = toStr(res)
+            End If
+        End If
     Else
         res = CStr(str)
-        If (Left(res, 1) = "[" And Right(res, 1) = "]") Or (Left(res, 1) = "{" And Right(res, 1) = "}") Or res = "false" Or res = "true" Then
-        Else
-            res = toStr(res)
-        End If
     End If
+    
     checkStr = res
 End Function
 
@@ -50,16 +54,16 @@ End Function
 Public Function toArray(ParamArray tokens())
     Dim x
     x = tokens
-    toArray = toArrayOrTuple("[", "]", x)
+    toArray = toArrayOrTuple(FALSE, "[", "]", x)
 End Function
 
 Public Function toTuple(ParamArray tokens())
     Dim x
     x = tokens
-    toTuple = toArrayOrTuple("{", "}", x)
+    toTuple = toArrayOrTuple(FALSE, "{", "}", x)
 End Function
 
-Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
+Private Function toArrayOrTuple(needQuote As Boolean,  prefix As String, suffix As String, tokens)
     Dim i As Long, str As String
     str = prefix
     Dim items, item
@@ -67,12 +71,12 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
         If TypeOf items Is Object  Then
             For Each item In items
                 If item <> "" Then
-                    str = str + checkStr(item) + ","
+                    str = str + checkStr(item, needQuote) + ","
                 End If
             Next
         Else
             If items <> "" Then
-                str = str + checkStr(items) + ","
+                str = str + checkStr(items, needQuote) + ","
             End If
         End If
         
@@ -110,7 +114,7 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     toArrayOfTuple = RemoveLastChar(arrStr, ",") + "]"
 End Function
 
-Private Function toMapHelper(prefix As String, suffix As String, eqStr As String, keyNum As Integer, tokens)
+Private Function toMapHelper(needQuote As Boolean, prefix As String, suffix As String, eqStr As String, keyNum As Integer, tokens)
     Dim keys() As String
     ReDim keys(keyNum)
     Dim cout As Integer, col As Integer
@@ -126,7 +130,7 @@ Private Function toMapHelper(prefix As String, suffix As String, eqStr As String
                 If Count <= keyNum Then
                     keys(Count) = CStr(item)
                 Else
-                    resStr = resStr + keys(col - keyNum) + eqStr + checkStr(item) + ","
+                    resStr = resStr + keys(col - keyNum) + eqStr + checkStr(item, needQuote) + ","
                 End If
             End If
         Next
@@ -137,14 +141,15 @@ End Function
 Public Function toErlangMap(keyNum As Integer, ParamArray tokens())
     Dim x
     x = tokens
-    toErlangMap = toMapHelper("#{", "}", " => ", keyNum, x)
+    toErlangMap = toMapHelper(FALSE, "#{", "}", " => ", keyNum, x)
 End Function
 
 Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
     Dim x
     x = tokens
-    toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
+    toLuaMap = toMapHelper(FALSE, "{", "}", " = ", keyNum, x)
 End Function
+
 
 
 
