@@ -1,10 +1,25 @@
-'songtianming 2019/9/19 19:00:59 加速复杂配置表结构生成
+'songtianming 2019/9/19 19:00:59  加速复杂配置表结构生成
 
 Public Function toStr(str As String)
     str = Replace(str, """", "\""")
     toStr = Chr(34) & str & Chr(34)
 End Function
 
+Private Function checkStr(str As Variant)
+    Dim res As String
+    
+    If IsNumeric(str) Then
+        res = CStr(str)
+
+    Else
+        res = CStr(str)
+        If (Left(res, 1) = "[" And Right(res, 1) = "]") Or (Left(res, 1) = "{" And Right(res, 1) = "}") Then
+        Else
+            res = toStr(res)
+        End If
+    End If
+    checkStr = res
+End Function
 
 Public Function printf(mask As String, ParamArray tokens()) As String
     Dim i As Long
@@ -53,12 +68,12 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
         If TypeOf items Is Object  Then
             For Each item In items
                 If item <> "" Then
-                    str = str + CStr(item) + ","
+                    str = str + checkStr(item) + ","
                 End If
             Next
         Else
             If items <> "" Then
-                str = str + CStr(items) + ","
+                str = str + checkStr(items) + ","
             End If
         End If
         
@@ -66,7 +81,7 @@ Private Function toArrayOrTuple(prefix As String, suffix As String, tokens)
     toArrayOrTuple = RemoveLastChar(str, ",") + suffix
 End Function
 
-'// [{1001, 2}, {2001, 3}, {3001, 4}] ；tupleMemNum为1的话生成[{1,xx},{2,xxx}]
+'// [{1001, 2}, {2001, 3}, {3001, 4}] ;if tupleMemNum = 1 then => [{1,xx},{2,xxx}]
 Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
     Dim items, item
     Dim cout As Integer, tupleIndex As Integer
@@ -79,9 +94,9 @@ Public Function toArrayOfTuple(tupleMemNum As Integer, ParamArray tokens())
         For Each item In items
             If item <> "" Then
                 If tupleMemNum = 1 Then
-                    tupleStr = tupleStr + CStr(tupleIndex) + ","
+                    tupleStr = tupleStr + checkStr(tupleIndex) + ","
                 End If
-                tupleStr = tupleStr + CStr(item) + ","
+                tupleStr = tupleStr + checkStr(item) + ","
                 cout = cout + 1
                 If cout >= tupleMemNum Then
                     tupleIndex = tupleIndex + 1
@@ -112,7 +127,7 @@ Private Function toMapHelper(prefix As String, suffix As String, eqStr As String
                 If Count <= keyNum Then
                     keys(Count) = CStr(item)
                 Else
-                    resStr = resStr + keys(col - keyNum) + eqStr + CStr(item) + ","
+                    resStr = resStr + keys(col - keyNum) + eqStr + checkStr(item) + ","
                 End If
             End If
         Next
@@ -131,6 +146,8 @@ Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
     x = tokens
     toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
 End Function
+
+
 
 
 
