@@ -1,4 +1,4 @@
-'songtianming 2019/9/19 19:00:59  加速复杂配置表结构生成
+'songtianming 2019/9/19 19:00:59 
 
 Public Function toStr(str As String)
     str = Replace(str, """", "\""")
@@ -10,10 +10,9 @@ Private Function checkStr(str As Variant)
     
     If IsNumeric(str) Then
         res = CStr(str)
-
     Else
         res = CStr(str)
-        If (Left(res, 1) = "[" And Right(res, 1) = "]") Or (Left(res, 1) = "{" And Right(res, 1) = "}") Then
+        If (Left(res, 1) = "[" And Right(res, 1) = "]") Or (Left(res, 1) = "{" And Right(res, 1) = "}") Or res = "false" Or res = "true" Then
         Else
             res = toStr(res)
         End If
@@ -146,6 +145,7 @@ Public Function toLuaMap(keyNum As Integer, ParamArray tokens())
     x = tokens
     toLuaMap = toMapHelper("{", "}", " = ", keyNum, x)
 End Function
+
 
 
 
